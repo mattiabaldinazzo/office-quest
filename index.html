@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Office Quest</title>
+  <meta name="description" content="Office Quest: un gioco di ruolo in stile Pokémon per Game Boy Advance ambientato in ufficio. Scegli il tuo Officemon, sfida i colleghi e conquista il Direttore.">
+  <meta name="theme-color" content="#3b2f86">
+  <meta property="og:title" content="Office Quest">
+  <meta property="og:description" content="Un RPG in stile GBA ambientato in ufficio. Gioca nel browser.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='3' y='1' width='10' height='14' fill='%23f8f8f0' stroke='%23202028'/%3E%3Crect x='5' y='4' width='6' height='1' fill='%23a0a8c8'/%3E%3Crect x='5' y='6' width='5' height='1' fill='%23a0a8c8'/%3E%3Ccircle cx='10' cy='12' r='2' fill='%23d03030'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="console" aria-label="Console di gioco">
+    <div class="pad-left">
+      <div class="dpad" id="dpad" aria-label="Croce direzionale">
+        <span class="arm up"></span><span class="arm down"></span><span class="arm left"></span><span class="arm right"></span><span class="hub"></span>
+      </div>
+    </div>
+    <div class="screen-area">
+      <div class="bezel">
+        <div class="led-row"><span class="led"></span><span>POWER</span></div>
+        <canvas id="screen" aria-label="Schermo del gioco Office Quest"></canvas>
+      </div>
+      <div class="brand">OFFICE QUEST <em>ADVANCE</em></div>
+    </div>
+    <div class="pad-right">
+      <button class="btn b" data-btn="b" aria-label="Pulsante B">B</button>
+      <button class="btn a" data-btn="a" aria-label="Pulsante A">A</button>
+    </div>
+    <div class="pad-meta">
+      <button class="pill" data-btn="select" aria-label="Select: audio on/off"><span id="mute">AUDIO ON</span></button>
+      <button class="pill" data-btn="start" aria-label="Start: menu">START</button>
+    </div>
+  </main>
+  <section class="help">
+    <h1>Office Quest</h1>
+    <p>Il tuo primo giorno all'Office Tower. Scegli un Officemon, sfida i colleghi e fatti promuovere dal Direttore.</p>
+    <ul>
+      <li><kbd>Frecce</kbd> / <kbd>WASD</kbd> muoviti</li>
+      <li><kbd>Z</kbd> / <kbd>Spazio</kbd> tasto A: parla, conferma</li>
+      <li><kbd>X</kbd> / <kbd>Esc</kbd> tasto B: annulla, tieni premuto per correre</li>
+      <li><kbd>Invio</kbd> START: menu e salvataggio</li>
+      <li><kbd>M</kbd> SELECT: audio on/off</li>
+    </ul>
+  </section>
+  <script src="js/audio.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/maps.js"></script>
+  <script src="js/battle.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

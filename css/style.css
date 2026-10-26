@@ -1,0 +1,212 @@
+:root {
+  --shell: #4b3f9e;
+  --shell-light: #6456c0;
+  --shell-dark: #2f2670;
+  --bezel: #2a2a3a;
+  --btn: #2e2a48;
+  --btn-top: #45406a;
+  --text: #e8e6f8;
+  --muted: #a8a4cc;
+  --bg: #17142e;
+  --font: "Press Start 2P", "Courier New", monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: radial-gradient(circle at 50% 0%, #2b2558 0%, var(--bg) 70%);
+  color: var(--text);
+  font-family: var(--font);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 16px;
+  gap: 18px;
+}
+
+.console {
+  display: grid;
+  grid-template-columns: 150px auto 150px;
+  grid-template-rows: auto auto;
+  grid-template-areas: "left screen right" "left meta right";
+  align-items: center;
+  gap: 8px 18px;
+  padding: 22px 28px 18px;
+  background: linear-gradient(180deg, var(--shell-light), var(--shell) 40%, var(--shell-dark));
+  border-radius: 46px 46px 90px 90px / 46px 46px 70px 70px;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, .25), inset 0 -6px 0 rgba(0, 0, 0, .25), 0 20px 50px rgba(0, 0, 0, .55);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.screen-area { grid-area: screen; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+
+.bezel {
+  background: var(--bezel);
+  padding: 14px 30px 18px;
+  border-radius: 12px 12px 34px 12px;
+  box-shadow: inset 0 0 0 3px #1c1c28, 0 2px 0 rgba(255, 255, 255, .15);
+}
+
+.led-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 6px;
+  color: #8888a8;
+  margin: 0 0 8px -18px;
+  letter-spacing: 1px;
+}
+.led { width: 7px; height: 7px; border-radius: 50%; background: #5cff6a; box-shadow: 0 0 6px #5cff6a; }
+
+#screen {
+  display: block;
+  width: min(720px, calc((100vh - 170px) * 1.5), calc(100vw - 460px));
+  min-width: 240px;
+  aspect-ratio: 3 / 2;
+  height: auto;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  background: #000;
+  border-radius: 2px;
+}
+
+.brand {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #d8d4f8;
+  text-shadow: 0 2px 0 var(--shell-dark);
+}
+.brand em { font-style: italic; color: #f8d030; font-size: 8px; }
+
+.pad-left { grid-area: left; display: flex; justify-content: center; }
+.pad-right { grid-area: right; display: flex; justify-content: center; align-items: center; gap: 12px; transform: rotate(-22deg); }
+.pad-meta { grid-area: meta; display: flex; justify-content: center; gap: 22px; }
+
+.dpad {
+  position: relative;
+  width: 124px;
+  height: 124px;
+  touch-action: none;
+  cursor: pointer;
+}
+.dpad .arm, .dpad .hub {
+  position: absolute;
+  background: linear-gradient(180deg, var(--btn-top), var(--btn));
+  box-shadow: 0 4px 0 #15122a;
+}
+.dpad .up, .dpad .down { left: 42px; width: 40px; height: 44px; }
+.dpad .left, .dpad .right { top: 42px; width: 44px; height: 40px; }
+.dpad .up { top: 0; border-radius: 8px 8px 0 0; }
+.dpad .down { bottom: 0; border-radius: 0 0 8px 8px; }
+.dpad .left { left: 0; border-radius: 8px 0 0 8px; }
+.dpad .right { right: 0; border-radius: 0 8px 8px 0; }
+.dpad .hub { left: 40px; top: 40px; width: 44px; height: 44px; box-shadow: none; }
+.dpad .arm::after {
+  content: "";
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 0; height: 0;
+  border: 7px solid transparent;
+  transform: translate(-50%, -50%);
+}
+.dpad .up::after { border-bottom-color: #6a6490; margin-top: -4px; }
+.dpad .down::after { border-top-color: #6a6490; margin-top: 4px; }
+.dpad .left::after { border-right-color: #6a6490; margin-left: -4px; }
+.dpad .right::after { border-left-color: #6a6490; margin-left: 4px; }
+.dpad[data-dir="up"] .up, .dpad[data-dir="down"] .down, .dpad[data-dir="left"] .left, .dpad[data-dir="right"] .right {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #15122a;
+  filter: brightness(1.25);
+}
+
+.btn {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  border: none;
+  font-family: var(--font);
+  font-size: 14px;
+  color: #b8b4dc;
+  background: radial-gradient(circle at 35% 30%, var(--btn-top), var(--btn) 70%);
+  box-shadow: 0 5px 0 #15122a, inset 0 2px 0 rgba(255, 255, 255, .15);
+  cursor: pointer;
+  touch-action: none;
+}
+.btn.a { margin-bottom: 34px; }
+.btn.on { transform: translateY(3px); box-shadow: 0 2px 0 #15122a; filter: brightness(1.3); }
+
+.pill {
+  min-width: 78px;
+  padding: 7px 10px;
+  border: none;
+  border-radius: 20px;
+  font-family: var(--font);
+  font-size: 7px;
+  color: #c8c4e8;
+  background: var(--btn);
+  box-shadow: 0 3px 0 #15122a;
+  transform: rotate(-12deg);
+  cursor: pointer;
+  touch-action: none;
+}
+.pill.on { transform: rotate(-12deg) translateY(2px); box-shadow: 0 1px 0 #15122a; }
+
+.help {
+  max-width: 720px;
+  text-align: center;
+  font-size: 8px;
+  line-height: 1.9;
+  color: var(--muted);
+}
+.help h1 { font-size: 12px; color: var(--text); margin: 0 0 6px; letter-spacing: 2px; }
+.help p { margin: 0 0 8px; }
+.help ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 18px; }
+kbd {
+  display: inline-block;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: #2e2a48;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 7px;
+  box-shadow: 0 2px 0 #0e0c1e;
+}
+
+/* Smartphone e schermi stretti: console verticale */
+@media (orientation: portrait) {
+  body { justify-content: flex-start; padding: 10px 10px 18px; gap: 12px; }
+  .console {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    grid-template-areas: "screen screen" "left right" "meta meta";
+    width: 100%;
+    max-width: 560px;
+    padding: 16px 16px 22px;
+    gap: 16px 10px;
+    border-radius: 22px 22px 60px 22px;
+  }
+  .bezel { padding: 10px 14px 14px; border-radius: 10px 10px 26px 10px; width: 100%; }
+  .led-row { margin-left: 0; }
+  #screen { width: 100%; min-width: 0; }
+  .help { display: none; }
+}
+
+@media (max-height: 520px) and (orientation: landscape) {
+  body { padding: 6px; }
+  .console { grid-template-columns: 130px auto 130px; padding: 10px 14px; gap: 4px 10px; }
+  #screen { width: min(720px, calc((100vh - 90px) * 1.5), calc(100vw - 340px)); }
+  .led-row, .brand { display: none; }
+  .dpad { width: 110px; height: 110px; }
+  .help { display: none; }
+}
