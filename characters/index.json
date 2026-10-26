@@ -1,1 +1,6 @@
-{ "files": ["bruno-backup.json", "sara-sprint.json"] }
+{
+  "files": [
+    "bruno-backup.json",
+    "sara-sprint.json"
+  ]
+}
