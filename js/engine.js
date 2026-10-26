@@ -95,6 +95,35 @@ function setupTouch() {
   pad.addEventListener('contextmenu', e => e.preventDefault());
 }
 
+// Mouse, trackpad e tocco sullo schermo: click sui menu, sui tasti e sulla mappa.
+const Pointer = { q: [], hover: null, moved: false };
+function toGame(e) {
+  const r = canvas.getBoundingClientRect();
+  return { x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H };
+}
+canvas.addEventListener('pointerdown', e => {
+  e.preventDefault();
+  Sound.init();
+  const p = toGame(e);
+  Pointer.q.push({ x: p.x, y: p.y, b: e.button === 2 ? 'b' : 'a' });
+});
+canvas.addEventListener('pointermove', e => {
+  if (e.pointerType !== 'mouse') return;
+  Pointer.hover = toGame(e);
+  Pointer.moved = true;
+});
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+function dispatchPointer(top) {
+  if (!top) { Pointer.q.length = 0; return; }
+  if (Pointer.moved && Pointer.hover && top.hover) top.hover(Pointer.hover.x, Pointer.hover.y);
+  Pointer.moved = false;
+  if (!Pointer.q.length) return;
+  const c = Pointer.q.shift();
+  if (c.b === 'b') { Input.pressed.b = true; return; }
+  if (top.click && top.click(c.x, c.y)) return;
+  Input.pressed.a = true;
+}
+
 // ---------- Layer ----------
 const Layers = [];
 function push(l) { Layers.push(l); return l; }
@@ -141,6 +170,7 @@ function loop(ts) {
   while (acc >= STEP) {
     acc -= STEP;
     const top = Layers[Layers.length - 1];
+    dispatchPointer(top);
     if (top && top.update) {
       try { top.update(); } catch (e) { console.error(e); }
     }
@@ -294,7 +324,18 @@ function choose(options, o = {}) {
     const y = o.y !== undefined ? o.y : 112 - h;
     let i = o.start || 0;
     const style = o.style || 'normal';
+    const hit = (gx, gy) => options.findIndex((opt, k) => {
+      const r = Math.floor(k / cols), c = k % cols;
+      const tx = x + 14 + c * colW, ty = y + 9 + r * lh;
+      return gx >= tx - 11 && gx < tx - 11 + colW && gy >= ty - 4 && gy < ty - 4 + lh;
+    });
     const L = {
+      click(gx, gy) {
+        const k = hit(gx, gy);
+        if (k >= 0) { i = k; Sound.sfx('select'); pop(L); res(i); }
+        return true;
+      },
+      hover(gx, gy) { const k = hit(gx, gy); if (k >= 0) i = k; },
       update() {
         const d = Input.dir();
         if (d) {

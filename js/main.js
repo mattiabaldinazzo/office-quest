@@ -5,6 +5,19 @@ const SAVE_KEY = 'office-quest-save-v2';
 // ---------- Squadra ----------
 function partyScreen(o = {}) {
   const L = {
+    click(gx, gy) {
+      if (!L.resolve) return true;
+      const n = game.party.length;
+      const k = Math.floor((gy - 4) / 21);
+      if (gx >= 4 && gx < 236 && gy >= 4 && k >= 0 && k < n && gy < 4 + k * 21 + 20) { L.i = k; Sound.sfx('select'); L.resolve(k); }
+      else if (!o.forced && gx >= 178 && gy >= 130) { Sound.sfx('blip'); L.resolve(-1); }
+      return true;
+    },
+    hover(gx, gy) {
+      const k = Math.floor((gy - 4) / 21);
+      if (gx >= 4 && gx < 236 && k >= 0 && k < game.party.length && gy < 126) L.i = k;
+      else if (!o.forced && gx >= 178 && gy >= 130) L.i = game.party.length;
+    },
     opaque: true, i: o.start !== undefined ? o.start : Math.max(0, game.party.findIndex((m, k) => m.hp > 0 && !(BT && k === BT.ai))), prompt: o.prompt || 'Scegli un Officemon.', swap: -1, resolve: null,
     update() {
       if (!L.resolve) return;
@@ -119,8 +132,15 @@ function pickItem(o = {}) {
     const keys = ITEM_ORDER.filter(k => game.bag[k] > 0);
     const n = keys.length;
     let i = 0;
+    const rowAt = (gx, gy) => (gx >= 80 && gx < 236 && gy >= 9) ? Math.floor((gy - 9) / 15) : -1;
     const L = {
       opaque: true,
+      click(gx, gy) {
+        const k = rowAt(gx, gy);
+        if (k >= 0 && k <= n) { i = k; Sound.sfx('select'); pop(L); res(i < n ? keys[i] : null); }
+        return true;
+      },
+      hover(gx, gy) { const k = rowAt(gx, gy); if (k >= 0 && k <= n) i = k; },
       update() {
         const d = Input.dir();
         if (d === 'up') { i = (i - 1 + n + 1) % (n + 1); Sound.sfx('blip'); }
@@ -327,8 +347,24 @@ function nameEntry() {
       if (/^[A-Za-z0-9àèéìòù.\-' ]$/.test(ch)) { add(ch); return true; }
       return false;
     };
+    const cellAt = (gx, gy) => {
+      const ry = Math.floor((gy - 41) / 14);
+      if (ry >= 0 && ry < rows.length) { const cx = Math.floor((gx - 26) / 19); return cx >= 0 && cx < 10 ? [ry, cx] : null; }
+      const by = 44 + rows.length * 14 + 4;
+      if (gy >= by - 5 && gy < by + 11) { if (gx >= 30 && gx < 110) return [rows.length, 0]; if (gx >= 126 && gx < 206) return [rows.length, 5]; }
+      return null;
+    };
     const L = {
       opaque: true,
+      click(gx, gy) {
+        const cell = cellAt(gx, gy);
+        if (!cell) return true;
+        [r, c] = cell;
+        if (r === rows.length) { if (c < 5) del(); else { Sound.sfx('select'); finish(); } }
+        else add(rows[r][c]);
+        return true;
+      },
+      hover(gx, gy) { const cell = cellAt(gx, gy); if (cell) [r, c] = cell; },
       update() {
         const d = Input.dir();
         if (d === 'up') r = (r - 1 + rows.length + 1) % (rows.length + 1);

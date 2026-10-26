@@ -9,7 +9,7 @@ const GROUND = { ',': 'floor', '.': 'carpet', s: 's', a: 'a', G: 'G', y: 'y', d:
 
 let game = null;
 let map = null, curMapId = null, npcs = [], banner = null, busy = false;
-const player = { x: 0, y: 0, dir: 'down', moving: false, prog: 0, speed: 1, parity: false, wasMoving: false, turnDelay: 0, lastBump: 0 };
+const player = { x: 0, y: 0, dir: 'down', moving: false, prog: 0, speed: 1, parity: false, wasMoving: false, turnDelay: 0, lastBump: 0, path: [], goal: null, target: null };
 
 function resetGame() {
   game = {
@@ -24,7 +24,7 @@ function loadMap(id, x, y, dir, opts = {}) {
   curMapId = id;
   map = MAPS[id];
   npcs = map.npcs.map(n => Object.assign({}, n, { ox: 0, oy: 0, fr: 0, timer: 60 + Math.floor(Math.random() * 120) }));
-  Object.assign(player, { x, y, dir, moving: false, prog: 0, wasMoving: false, turnDelay: 0 });
+  Object.assign(player, { x, y, dir, moving: false, prog: 0, wasMoving: false, turnDelay: 0, path: [], goal: null, target: null });
   banner = opts.noBanner ? null : { text: map.name, t: 0 };
   Sound.play(map.outdoor ? 'city' : 'town');
   if (!opts.noBald) Bald.onEnterMap();
@@ -89,7 +89,12 @@ function drawNpcSprite(n, sx, sy) {
 }
 
 const Overworld = {
-  opaque: true,
+  opaque: true, camX: 0, camY: 0,
+  click(gx, gy) {
+    if (busy) return true;
+    clickWorld(Math.floor((gx + this.camX) / TS), Math.floor((gy + this.camY + 4) / TS));
+    return true;
+  },
   update() {
     if (busy) return;
     for (const n of activeNpcs()) {
@@ -104,9 +109,14 @@ const Overworld = {
   draw() {
     const [px, py] = playerPixel();
     const camX = Math.round(px - 112), camY = Math.round(py - 72);
+    this.camX = camX; this.camY = camY;
     rect(0, 0, W, H, '#101018');
     const x0 = Math.floor(camX / TS), y0 = Math.floor(camY / TS);
     for (let ty = y0; ty <= y0 + 11; ty++) for (let tx = x0; tx <= x0 + 15; tx++) drawTile(tx, ty, tx * TS - camX, ty * TS - camY);
+    if (player.goal && (frameCount >> 3) % 2) {
+      const gx = player.goal[0] * TS - camX, gy = player.goal[1] * TS - camY;
+      ctx.strokeStyle = '#f8f8f8'; ctx.lineWidth = 1; ctx.strokeRect(gx + 2.5, gy + 2.5, 11, 11);
+    }
     const ents = activeNpcs().map(n => ({ n, y: n.y * TS + n.oy, x: n.x * TS + n.ox }));
     for (const d of (map.decor || [])) ents.push({ d, x: d.x * TS, y: (d.y + d.h - 1) * TS - (d.nosolid ? 0 : 0.5) });
     ents.push({ p: true, x: px, y: py });
@@ -149,9 +159,26 @@ function updatePlayer() {
     }
     return;
   }
-  if (Input.hit('start')) { Sound.sfx('select'); runScript(startMenu); return; }
-  if (Input.hit('a')) { interact(); return; }
-  const d = Input.heldDir();
+  if (Input.hit('start')) { clearPath(); Sound.sfx('select'); runScript(startMenu); return; }
+  if (Input.hit('a')) { clearPath(); interact(); return; }
+  let d = Input.heldDir();
+  if (d) clearPath();
+  else if (p.path.length) {
+    d = p.path.shift();
+    p.dir = d;
+    p.turnDelay = 0;
+    const [ax, ay] = DIRS[d];
+    if (!walkable(p.x + ax, p.y + ay) || npcAt(p.x + ax, p.y + ay)) { clearPath(); return; }
+    p.moving = true; p.prog = 0; p.speed = game.flags.kit ? 2 : 1; p.parity = !p.parity; p.wasMoving = true;
+    return;
+  } else if (p.target) {
+    const t = p.target;
+    p.target = null; p.goal = null;
+    const fx = Math.sign(t.x - p.x), fy = Math.sign(t.y - p.y);
+    p.dir = fx > 0 ? 'right' : fx < 0 ? 'left' : fy > 0 ? 'down' : 'up';
+    interact();
+    return;
+  } else p.goal = null;
   if (!d) { p.wasMoving = false; p.turnDelay = 0; return; }
   if (d !== p.dir) {
     p.dir = d;
@@ -168,6 +195,55 @@ function updatePlayer() {
     p.wasMoving = false;
     if (frameCount - p.lastBump > 20) { Sound.sfx('bump'); p.lastBump = frameCount; }
   }
+}
+
+function clearPath() { player.path = []; player.goal = null; player.target = null; }
+
+// Percorso più breve verso una delle caselle obiettivo, senza attraversare uscite intermedie.
+function findPath(goals) {
+  const key = (x, y) => x + ',' + y;
+  const goalSet = new Set(goals.map(([x, y]) => key(x, y)));
+  if (goalSet.has(key(player.x, player.y))) return [];
+  const prev = new Map([[key(player.x, player.y), null]]), q = [[player.x, player.y]];
+  while (q.length) {
+    const [x, y] = q.shift();
+    for (const [dname, [dx, dy]] of Object.entries(DIRS)) {
+      const nx = x + dx, ny = y + dy, k = key(nx, ny);
+      if (prev.has(k) || !walkable(nx, ny) || npcAt(nx, ny)) continue;
+      prev.set(k, [x, y, dname]);
+      if (goalSet.has(k)) {
+        const path = [];
+        let cur = k;
+        while (prev.get(cur)) { const [px, py, dn] = prev.get(cur); path.unshift(dn); cur = key(px, py); }
+        return path;
+      }
+      if (!isWarp(nx, ny)) q.push([nx, ny]);
+    }
+  }
+  return null;
+}
+
+function clickWorld(tx, ty) {
+  if (tx === player.x && ty === player.y) return;
+  const n = npcAt(tx, ty);
+  const ch = tileAt(tx, ty);
+  const interesting = n || (map.signs && map.signs[`${tx},${ty}`]) || decorAt(tx, ty) || TILE_TEXT[ch === 'b' ? 'B' : ch];
+  let goals, target = null;
+  if (!n && walkable(tx, ty)) goals = [[tx, ty]];
+  else {
+    target = { x: tx, y: ty };
+    goals = Object.values(DIRS).map(([dx, dy]) => [tx + dx, ty + dy]).filter(([x, y]) => walkable(x, y) && !npcAt(x, y) && !isWarp(x, y));
+    // dietro a un bancone si parla da due caselle di distanza
+    for (const [dx, dy] of Object.values(DIRS)) if ('DRC'.includes(tileAt(tx + dx, ty + dy)) && walkable(tx + 2 * dx, ty + 2 * dy)) goals.push([tx + 2 * dx, ty + 2 * dy]);
+    if (Math.abs(tx - player.x) + Math.abs(ty - player.y) === 1) goals.push([player.x, player.y]);
+    if (!interesting) target = null;
+  }
+  const path = goals.length ? findPath(goals) : null;
+  if (path === null) { Sound.sfx('bump'); return; }
+  player.path = path;
+  player.goal = path.length ? [tx, ty] : null;
+  player.target = target;
+  Sound.sfx('blip');
 }
 
 function onStep() {
@@ -210,6 +286,7 @@ function spottingTrainer() {
 async function runScript(fn) {
   if (busy) return;
   busy = true;
+  player.path = []; player.goal = null; player.target = null;
   try { await fn(); } catch (e) { console.error(e); }
   busy = false;
   player.wasMoving = false;

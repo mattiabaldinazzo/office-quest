@@ -34,6 +34,11 @@ Il Project Manager più esperto dell'azienda. Compare continuamente in giro per 
 | B: annulla, corri (tieni premuto) | X, Esc, K | B |
 | START: menu, salvataggio | Invio | START |
 | SELECT: audio on/off | M | AUDIO |
+| Vai in un punto, parla con qualcuno | Clic sulla mappa o sul personaggio | Tocco sullo schermo |
+| Scegli una voce di menu o una lettera | Clic sulla voce | Tocco sulla voce |
+| Tasto B | Clic destro | B |
+
+Su smartphone in verticale la console occupa tutto lo schermo. Per giocare senza le barre del browser aggiungi la pagina alla schermata Home: si apre a schermo intero come un'app.
 
 ## Contenuti
 
