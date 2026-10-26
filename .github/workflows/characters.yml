@@ -1,0 +1,47 @@
+name: Indice personaggi
+
+# Ogni volta che aggiungi, modifichi o elimini un file in characters/,
+# questa Action rigenera characters/index.json: il gioco lo legge per sapere quali personaggi caricare.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'characters/*.json'
+      - '!characters/index.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Controlla i JSON e genera l'indice
+        run: |
+          python3 - <<'PY'
+          import json, os, sys
+          files, bad = [], []
+          for f in sorted(os.listdir('characters')):
+              if not f.endswith('.json') or f == 'index.json':
+                  continue
+              try:
+                  data = json.load(open(os.path.join('characters', f), encoding='utf-8'))
+                  if not str(data.get('nome', '')).strip():
+                      raise ValueError('manca il campo "nome"')
+                  files.append(f)
+              except Exception as e:
+                  bad.append(f)
+                  print(f'::warning file=characters/{f}::{f} ignorato: {e}')
+          with open('characters/index.json', 'w', encoding='utf-8') as out:
+              json.dump({'files': files}, out, ensure_ascii=False, indent=2)
+              out.write('\n')
+          print('Personaggi:', ', '.join(files) or 'nessuno')
+          PY
+      - name: Salva l'indice
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add characters/index.json
+          git diff --cached --quiet || (git commit -m "Aggiorna l'indice dei personaggi" && git push)

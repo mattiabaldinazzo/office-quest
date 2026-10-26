@@ -142,7 +142,7 @@ BALD_TEXT.vr = [
   ['indossa un visore e disegna nell\'aria', 'Sto disegnando il Gantt in tre dimensioni. Le dipendenze adesso sono tubi colorati.'],
   ['prova un visore VR e ride da solo', 'Sono in una simulazione di customer care. Il cliente virtuale è gentilissimo. È fantascienza.'],
   ['visita una rete virtuale con un visore', 'Sto camminando dentro un router. È più grande di quanto pensassi. E molto ordinato.'],
-  ['usa un visore e saluta qualcuno che non c\'è', 'Ciao! Sto salutando il collega della sede staccata. In VR è a un passo. Nella realtà, a un\'ora e mezza.'],
+  ['usa un visore e saluta qualcuno che non c\'è', 'Ciao! Sto salutando il collega della Sede #2. In VR è a un passo. Nella realtà, a un\'ora e mezza.'],
   ['gioca a tennis in realtà virtuale', 'Quindici a zero. Il mio avversario è un algoritmo. Ma ha un dritto pazzesco.'],
   ['usa un visore VR e cammina in tondo', 'Sono in un labirinto virtuale. È come cercare la sala riunioni giusta il primo giorno.'],
   ['testa un visore VR per la formazione dei nuovi assunti', 'Formazione immersiva. Impari a installare un modem senza toccarne uno. Il futuro.'],
@@ -233,7 +233,7 @@ BALD_TEXT.basket = [
   ['fa girare il pallone sul dito', 'Il pallone gira come un buon processo: stabile, regolare, senza intoppi.'],
   ['tira a canestro e fa un passaggio a sorpresa a un collega', 'Il basket è uno sport di squadra. Il passaggio vale quanto il canestro.'],
   ['allena una squadra di colleghi a basket', 'Difesa a zona! Come il customer care: ognuno copre la sua area.'],
-  ['tira a canestro con un pallone a forma di router', 'Rimbalza un po\' storto, ma entra. Come le connessioni in sede staccata.'],
+  ['tira a canestro con un pallone a forma di router', 'Rimbalza un po\' storto, ma entra. Come le connessioni in Sede #2.'],
   ['fa canestro e esulta con un saluto alla folla', 'Grazie, grazie! Il pubblico immaginario è sempre il più caloroso.'],
   ['tira l\'ultimo tiro sulla sirena', 'Tre, due, uno... canestro! Come le consegne di venerdì alle 17:59.']
 ];
@@ -303,7 +303,7 @@ BALD_TEXT.karaoke = [
   ['canta al karaoke tenendo il ritmo con il piede', 'Il ritmo del piede è il metronomo della vita. Non va mai fuori tempo.'],
   ['canta una ballata rock alzando il pugno', 'Questa è per tutti quelli che hanno sopravvissuto a una migrazione di database.'],
   ['canta una canzone e la dedica alla macchinetta del caffè', 'Senza di lei non canterei. Né lavorerei. Né vivrei, forse.'],
-  ['chiude una canzone al karaoke con un acuto lunghissimo', 'Questo acuto si sente fino in sede staccata. Ci vuole un\'ora e mezza di viaggio, ma il suono arriva.']
+  ['chiude una canzone al karaoke con un acuto lunghissimo', 'Questo acuto si sente fino in Sede #2. Ci vuole un\'ora e mezza di viaggio, ma il suono arriva.']
 ];
 
 BALD_TEXT.corda = [

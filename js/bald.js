@@ -564,5 +564,5 @@ const Bald = (() => {
     npcs.push(make(x, y, dir, sc, suit));
   }
 
-  return { draw, talk, intro, onEnterMap, onStep, spawn, force, afterBattle, count: () => (game.bald ? game.bald.count : 0), VIS };
+  return { draw, talk, intro, onEnterMap, onStep, spawn, force, afterBattle, findSpot, count: () => (game.bald ? game.bald.count : 0), VIS };
 })();

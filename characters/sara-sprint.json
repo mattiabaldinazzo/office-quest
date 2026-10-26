@@ -1,0 +1,14 @@
+{
+  "nome": "Sara Sprint",
+  "ruolo": "Scrum Master",
+  "carattere": "entusiasta",
+  "percentuale_incontri": 40,
+  "piani": ["1", "-1", "Sede #2"],
+  "capelli": { "colore": "rossi", "acconciatura": "lunghi" },
+  "occhi": "verdi",
+  "frasi": [
+    "Lo stand-up di oggi è durato 14 minuti e 58 secondi. Record personale!",
+    "Ho portato i post-it nuovi. Sono a forma di stella. Il backlog non è mai stato così bello.",
+    "La retrospettiva di venerdì sarà a tema anni '80. Porta lo scaldamuscoli."
+  ]
+}

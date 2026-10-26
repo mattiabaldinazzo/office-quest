@@ -2,7 +2,7 @@
 // Mappe, personaggi, allenatori e indizi.
 const PAL = {
   player: { id: 'player', hair: '#5a3a22', shirt: '#f8f8f8', pants: '#384878', tie: '#d03030' },
-  ondina: { id: 'ondina', hair: '#c86030', shirt: '#4898a8', pants: '#383848', long: true, glasses: true },
+  hr: { id: 'hr', hair: '#c86030', shirt: '#4898a8', pants: '#383848', long: true, glasses: true },
   cablaggi: { id: 'cablaggi', hair: '#808080', shirt: '#e08830', pants: '#384858' },
   kevin: { id: 'kevin', hair: '#e8c040', shirt: '#3888d0', pants: '#584838', spiky: true },
   recept: { id: 'recept', hair: '#282828', shirt: '#e87878', pants: '#484858', long: true },
@@ -100,7 +100,7 @@ const HINTS = [
   'Il wifi più veloce del palazzo è al -1, vicino ai distributori. Chissà perché.',
   'Il Dott. Baldinazzo ha detto: "Il mio ufficio è come un buon KPI: se lo cerchi bene, lo trovi."',
   'Dal -1 si sente ogni tanto un applauso. Viene da dietro il muro. Forse il Dott. Baldinazzo si complimenta con le sue dashboard.',
-  'In sede staccata nessuno sa dell\'ufficio segreto. Ma tutti sanno che il -1 della sede principale è "strano".',
+  'In Sede #2 nessuno sa dell\'ufficio segreto. Ma tutti sanno che il -1 della sede principale è "strano".',
   'Le leggende dell\'ufficio dicono: "Scendi al -1, passa tra i distributori, sali nella griglia."',
   'Se un giorno trovi un cartello "Torno subito", sei arrivato nel posto giusto.',
   'Il Dott. Baldinazzo non ha mai detto dov\'è il suo ufficio. Ma ha detto che il -1 è "il piano più sottovalutato".',
@@ -116,9 +116,9 @@ const TRAINERS = {
     after: 'Il TECH LEAD è nella sala riunioni a vetri. Io aspetto qui che finisca la build. Da tre ore.',
     team: () => [['graffetta', 8], [RIVAL_PICK[game.flags.starter], 10]] },
   rival3: { title: 'KEVIN', pal: PAL.kevin, money: 800, sight: 4,
-    intro: ['Anche tu diretto alla sede staccata? Ci sto andando da ieri mattina.', 'Il tram 33 è soppresso, la metro è chiusa, il navigatore mi manda in un cantiere. Sfogo la frustrazione su di te!'],
+    intro: ['Anche tu diretto alla Sede #2? Ci sto andando da ieri mattina.', 'Il tram 33 è soppresso, la metro è chiusa, il navigatore mi manda in un cantiere. Sfogo la frustrazione su di te!'],
     lose: 'Va bene, va bene. Almeno sai la strada? Io no.',
-    after: 'La sede staccata è in fondo a destra, oltre il cantiere. Dicono. Nessuno ci è mai arrivato in meno di un\'ora.',
+    after: 'La Sede #2 è in fondo a destra, oltre il cantiere. Dicono. Nessuno ci è mai arrivato in meno di un\'ora.',
     team: () => [['pinzatrice', 19], ['ripetitore', 20], [RIVAL_PICK[game.flags.starter], 22]] },
   rival4: { title: 'KEVIN', pal: PAL.kevin, money: 1500, sight: 3,
     intro: ['Siamo arrivati in fondo, eh? Il quarto piano. L\'AD ci aspetta.', 'Ma solo uno di noi entrerà da quella porta. Ultima lotta tra colleghi!'],
@@ -138,7 +138,7 @@ const TRAINERS = {
   netman: { title: 'NETWORK MANAGER BACKBONE', pal: PAL.netman, money: 1300, sight: 0,
     intro: ['Latenza zero, ridondanza totale. Questa è la mia rete.', 'Vediamo se riesci a superare il mio core network!'],
     lose: 'Uptime interrotto. Non mi succedeva dal 2019.',
-    after: 'La sede staccata è lontana, ma la strada c\'è. Più o meno.',
+    after: 'La Sede #2 è lontana, ma la strada c\'è. Più o meno.',
     team: [['antennina', 17], ['switchone', 17], ['rackone', 19]] },
   ad: { title: "L'AMMINISTRATORE DELEGATO", pal: PAL.ad, money: 5000,
     lose: 'Straordinario. Il piano industriale lo scrivi tu, l\'anno prossimo.',
@@ -192,7 +192,7 @@ const MAPS = {
     npcs: [
       { id: 'recept', x: 5, y: 3, dir: 'down', pal: PAL.recept, hint: 0, talk: () => receptTalk() },
       { id: 'guard', x: 8, y: 9, dir: 'right', pal: PAL.guard, hint: 1,
-        text: () => game.flags.dossier ? ['VIGILANZA BADGE: Hai il dossier per la sede staccata? Allora vai pure. Porta un ombrello, una borraccia e tanta pazienza.'] : ['VIGILANZA BADGE: Da qui si esce verso la città. Ma tu oggi resti in sede: sei appena arrivato!'] },
+        text: () => game.flags.dossier ? ['VIGILANZA BADGE: Hai il dossier per la Sede #2? Allora vai pure. Porta un ombrello, una borraccia e tanta pazienza.'] : ['VIGILANZA BADGE: Da qui si esce verso la città. Ma tu oggi resti in sede: sei appena arrivato!'] },
       { id: 'visitor', x: 3, y: 7, dir: 'up', pal: PAL.visitor, hint: 2,
         text: ['CANDIDATO: Sono qui per un colloquio. Mi hanno detto di aspettare "cinque minuti". Era martedì.'] },
       { id: 'corriere0', x: 15, y: 8, dir: 'left', pal: PAL.corriere, hint: 3, wander: true,
@@ -247,25 +247,51 @@ const MAPS = {
       '####ddd#########',
       '######o#########'
     ],
-    warps: { '6,10': ['pm1', 16, 2, 'down'], '7,1': ['studio', 6, 7, 'up'] },
+    warps: { '6,10': ['pm1', 16, 2, 'down'], '7,1': ['studio', 8, 9, 'up'] },
     signs: { '4,5': ['Una vecchia cassa di legno. C\'è scritto "ARCHIVIO 1998". Dentro ci sono decine di SIM formato maxi, quelle grandi come una carta di credito.'] },
     npcs: []
   },
   studio: {
     name: 'UFFICIO DEL DOTT. BALDINAZZO',
     tiles: [
-      '##############',
-      '#LLLLLLLLLLLL#',
-      '#LLLLLLLLLLLL#',
-      '#LppppppppppL#',
-      '#LppppppppppL#',
-      '#LppppppppppL#',
-      '#PppppppppppP#',
-      '#pppppppppppp#',
-      '######oo######'
+      '##################',
+      '#LLLHHHHHHHHHHLLL#',
+      '#LLLHHHHHHHHHHLLL#',
+      '#LLLppppppppppppp#',
+      '#LLLppppppppppppp#',
+      '#pppppppppppppppp#',
+      '#pppppppppppppppp#',
+      '#pppppppppppppppp#',
+      '#Pppppppppppppppp#',
+      '#pppppppppppppppP#',
+      '########oo########'
     ],
-    decor: [{ k: 'desk3', x: 5, y: 4, w: 3, h: 1 }, { k: 'chair', x: 6, y: 3, w: 1, h: 1 }, { k: 'sign', x: 8, y: 3, w: 1, h: 1 }],
-    warps: { '6,8': ['cunicolo', 7, 2, 'down'], '7,8': ['cunicolo', 7, 2, 'down'] },
+    decor: [
+      { k: 'tappeto', x: 5, y: 6, w: 7, h: 3, nosolid: true, under: true },
+      { k: 'board', x: 5, y: 1, w: 6, h: 2, nosolid: true },
+      { k: 'quadro', v: 'ritratto', x: 4, y: 1, w: 1, h: 1, nosolid: true },
+      { k: 'quadro', v: 'paddle', x: 4, y: 2, w: 1, h: 1, nosolid: true },
+      { k: 'quadro', v: 'gioconda', x: 11, y: 1, w: 1, h: 1, nosolid: true },
+      { k: 'quadro', v: 'notte', x: 12, y: 1, w: 1, h: 1, nosolid: true },
+      { k: 'quadro', v: 'diploma', x: 13, y: 1, w: 1, h: 1, nosolid: true },
+      { k: 'scritta', text: 'CARPE DEADLINE', x: 11, y: 2, w: 3, h: 1, nosolid: true },
+      { k: 'desk3', x: 7, y: 5, w: 3, h: 1 },
+      { k: 'chair', x: 8, y: 4, w: 1, h: 1 },
+      { k: 'sign', x: 9, y: 4, w: 1, h: 1 },
+      { k: 'telefono', x: 5, y: 5, w: 1, h: 1 },
+      { k: 'macchina', x: 11, y: 5, w: 1, h: 1 },
+      { k: 'lampada', x: 12, y: 4, w: 1, h: 1 },
+      { k: 'poltrona', x: 13, y: 4, w: 1, h: 1 },
+      { k: 'mappamondo', x: 15, y: 4, w: 1, h: 1 },
+      { k: 'pendolo', x: 16, y: 5, w: 1, h: 2 },
+      { k: 'trofei', x: 16, y: 7, w: 1, h: 2 },
+      { k: 'appendiabiti', x: 4, y: 3, w: 1, h: 1 },
+      { k: 'grammofono', x: 1, y: 6, w: 1, h: 1 },
+      { k: 'carrello', x: 1, y: 7, w: 1, h: 1 },
+      { k: 'cassaforte', x: 14, y: 9, w: 1, h: 1 },
+      { k: 'gatto', x: 13, y: 5, w: 1, h: 1 }
+    ],
+    warps: { '8,10': ['cunicolo', 7, 2, 'down'], '9,10': ['cunicolo', 7, 2, 'down'] },
     npcs: []
   },
   p5: {
@@ -282,7 +308,7 @@ const MAPS = {
       '##########################'
     ],
     npcs: [
-      { id: 'ondina', x: 4, y: 2, dir: 'down', pal: PAL.ondina, hint: 4, talk: () => hrTalk() },
+      { id: 'hr', x: 4, y: 2, dir: 'down', pal: PAL.hr, hint: 4, talk: () => hrTalk() },
       { id: 'kevin', x: 8, y: 5, dir: 'left', pal: PAL.kevin, show: () => !game.flags.rival1,
         text: ['KEVIN: Ciao! Anch\'io sono nuovo. Mi chiamo KEVIN.', 'KEVIN: Pare che oggi ci assegnino il nostro primo Officemon. Spero in uno con il 5G.'] },
       { id: 'f_simmetta', kind: 'folder', color: '#d09818', sp: 'simmetta', x: 2, y: 5, show: () => !game.flags.taken_simmetta, talk: n => folderTalk(n) },
@@ -484,12 +510,12 @@ const MAPS = {
       { id: 'barista_via', x: 1, y: 12, dir: 'right', pal: PAL.barista, hint: 31, talk: () => kioskTalk('BARISTA DEL CHIOSCO') },
       { id: 'rider', x: 8, y: 11, dir: 'right', pal: PAL.rider, hint: 32,
         trainer: T('RIDER IN CONSEGNA', PAL.rider, [['smartfonino', 17], ['graffetta', 17]], 500, 4,
-          ['Ho un sushi da consegnare in Isola entro dieci minuti. Tu sei sulla mia ciclabile!'], 'Cinque stelle a te, una stella a me.', 'Per la sede staccata? Passa dalla piazza delle fontane, poi il bosco in verticale, poi l\'Isola. E prega.') },
+          ['Ho un sushi da consegnare in Isola entro dieci minuti. Tu sei sulla mia ciclabile!'], 'Cinque stelle a te, una stella a me.', 'Per la Sede #2? Passa dalla piazza delle fontane, poi il bosco in verticale, poi l\'Isola. E prega.') },
       { id: 'runner', x: 26, y: 12, dir: 'left', pal: PAL.runner, hint: 33,
         trainer: T('RUNNER DELLA PAUSA PRANZO', PAL.runner, [['cavetto', 17], ['antennina', 18]], 520, 3,
-          ['Corro dieci chilometri in pausa pranzo. Lottare con te è il mio defaticamento.'], 'Ho perso il ritmo. E la partita.', 'Il segreto per arrivare in sede staccata? Scarpe comode e niente fretta.') },
+          ['Corro dieci chilometri in pausa pranzo. Lottare con te è il mio defaticamento.'], 'Ho perso il ritmo. E la partita.', 'Il segreto per arrivare in Sede #2? Scarpe comode e niente fretta.') },
       { id: 'passante1', x: 4, y: 5, dir: 'down', pal: PAL.passante, hint: 34, wander: true,
-        text: ['PASSANTE: La sede staccata? Ah, quella dopo l\'Isola. Ci vuole un\'ora a piedi. Due, con i cantieri.'] }
+        text: ['PASSANTE: La Sede #2? Ah, quella dopo l\'Isola. Ci vuole un\'ora a piedi. Due, con i cantieri.'] }
     ]
   },
   piazza: {
@@ -617,7 +643,7 @@ const MAPS = {
     ],
     decor: [{ k: 'palazzo', x: 0, y: 3, w: 5, h: 6, v: 0, graffiti: true }, { k: 'palazzo', x: 5, y: 2, w: 5, h: 7, v: 1 },
       { k: 'palazzo', x: 10, y: 3, w: 5, h: 6, v: 2, awning: '#3878c8' }, { k: 'palazzo', x: 15, y: 2, w: 6, h: 7, v: 3, graffiti: true },
-      { k: 'sede', x: 22, y: 0, w: 8, h: 9, door: 3, color: '#c8d0d8', band: '#c02828', label: 'SEDE 2', holes: [[25, 8], [26, 8]] },
+      { k: 'sede', x: 22, y: 0, w: 8, h: 9, door: 3, color: '#c8d0d8', band: '#c02828', label: 'SEDE #2', holes: [[25, 8], [26, 8]] },
       { k: 'palazzo', x: 0, y: 16, w: 8, h: 6, v: 4 }, { k: 'palazzo', x: 22, y: 16, w: 8, h: 6, v: 1, graffiti: true, awning: '#48a048' }],
     warps: {
       '0,10': ['bosco', 28, 10, 'left'], '0,11': ['bosco', 28, 11, 'left'],
@@ -637,11 +663,11 @@ const MAPS = {
       { id: 'kevin3', x: 23, y: 10, dir: 'left', pal: PAL.kevin, trainer: TRAINERS.rival3 },
       { id: 'barman2', x: 27, y: 11, dir: 'left', pal: PAL.barista, hint: 2,
         trainer: T('BARISTA DELL\'APERITIVO', PAL.barista, [['moka', 20], ['tazzino', 21], ['espressone', 21]], 700, 3,
-          ['Sono le sei. È l\'ora dello spritz. Ma prima, una lotta per aprire l\'appetito.'], 'Ti offro un tagliere. Te lo sei meritato.', 'La sede staccata è proprio qui sopra. L\'ingresso è quella porta a vetri.') }
+          ['Sono le sei. È l\'ora dello spritz. Ma prima, una lotta per aprire l\'appetito.'], 'Ti offro un tagliere. Te lo sei meritato.', 'La Sede #2 è proprio qui sopra. L\'ingresso è quella porta a vetri.') }
     ]
   },
   sede2pt: {
-    name: 'SEDE STACCATA - PIANO TERRA',
+    name: 'SEDE #2 - PIANO TERRA',
     tiles: [
       '################',
       '##W##W##S##W####',
@@ -659,7 +685,7 @@ const MAPS = {
     ]
   },
   sede2p1: {
-    name: 'SEDE STACCATA - 1° PIANO',
+    name: 'SEDE #2 - 1° PIANO',
     tiles: [
       '##############################',
       '#W##Z##W###Z##W##N##N##W##N###',

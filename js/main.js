@@ -407,12 +407,12 @@ function nameEntry() {
 
 async function intro() {
   const L = {
-    opaque: true, show: 'ondina',
+    opaque: true, show: 'hr',
     draw() {
       rect(0, 0, W, H, '#d8e8f0');
       for (let y = 0; y < 112; y += 6) rect(0, y, W, 3, '#d0e0ec');
       ellipseFill(120, 100, 50, 10, '#a8bccc'); ellipseFill(120, 99, 44, 7, '#c4d4e0');
-      if (this.show === 'ondina') ctx.drawImage(Sprites.character(PAL.ondina, 'down', 0), 96, 38, 48, 63);
+      if (this.show === 'hr') ctx.drawImage(Sprites.character(PAL.hr, 'down', 0), 96, 38, 48, 63);
       if (this.show === 'mon') { ctx.drawImage(Sprites.mon('simmetta'), 60, 52); ctx.drawImage(Sprites.mon('routerino'), 132, 52); }
       if (this.show === 'player') ctx.drawImage(Sprites.character(PAL.player, 'down', 0), 96, 38, 48, 63);
     }
@@ -422,7 +422,7 @@ async function intro() {
   await fadeIn(20);
   await sayAll([
     'Ciao! Benvenuto nel mondo di OFFICE QUEST!',
-    `Io sono la Dott.ssa ONDINA, Risorse Umane di ${COMPANY}, la società di telecomunicazioni più veloce d'Italia. Almeno secondo il marketing.`
+    `Io sono la Dott.ssa ONBOARDINI, Risorse Umane di ${COMPANY}, la società di telecomunicazioni più veloce d'Italia. Almeno secondo il marketing.`
   ]);
   L.show = 'mon';
   Sound.sfx('fanfare');
@@ -525,6 +525,7 @@ async function boot() {
     await Promise.race([document.fonts.load('8px "Press Start 2P"'), new Promise(r => setTimeout(r, 2500))]);
   } catch (e) {}
   validateMaps();
+  try { await Promise.race([CustomChars.load(), new Promise(r => setTimeout(r, 4000))]); } catch (e) { console.warn(e); }
   requestAnimationFrame(loop);
   titleScreen();
 }

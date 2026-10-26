@@ -4,7 +4,7 @@ const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 const OPP = { up: 'down', down: 'up', left: 'right', right: 'left' };
 const WALKABLE = '.,gESOoVpdsyGqke';
 const ENCOUNTER = 'gq';
-const FACE_ROW = '#WESOVbZNL';
+const FACE_ROW = '#WESOVbZNLH';
 const GROUND = { ',': 'floor', '.': 'carpet', s: 's', a: 'a', G: 'G', y: 'y', d: 'd', p: 'p', q: 'G' };
 
 let game = null;
@@ -27,6 +27,7 @@ function loadMap(id, x, y, dir, opts = {}) {
   Object.assign(player, { x, y, dir, moving: false, prog: 0, wasMoving: false, turnDelay: 0, path: [], goal: null, target: null });
   banner = opts.noBanner ? null : { text: map.name, t: 0 };
   Sound.play(map.outdoor ? 'city' : 'town');
+  CustomChars.spawnFor(id);
   if (!opts.noBald) Bald.onEnterMap();
 }
 function tileAt(x, y) {
@@ -37,6 +38,11 @@ function tileAt(x, y) {
 function decorAt(x, y) {
   if (!map.decor) return null;
   return map.decor.find(d => !d.nosolid && x >= d.x && x < d.x + d.w && y >= d.y && y < d.y + d.h && !(d.holes && d.holes.some(h => h[0] === x && h[1] === y))) || null;
+}
+function decorAny(x, y) {
+  if (!map.decor) return null;
+  const hits = map.decor.filter(d => !d.under && x >= d.x && x < d.x + d.w && y >= d.y && y < d.y + d.h && !(d.holes && d.holes.some(h => h[0] === x && h[1] === y)));
+  return hits.find(d => !d.nosolid) || hits[hits.length - 1] || map.decor.find(d => d.under && x >= d.x && x < d.x + d.w && y >= d.y && y < d.y + d.h) || null;
 }
 function walkable(x, y) { return WALKABLE.includes(tileAt(x, y)) && !decorAt(x, y); }
 function baldHidden(n) {
@@ -64,6 +70,7 @@ function drawTile(x, y, sx, sy) {
     const below = tileAt(x, y + 1);
     img = Sprites.tile(below !== 'X' && !FACE_ROW.includes(below) ? '#face' : '#top');
   } else if (ch === 'b') img = Sprites.tile('B', v, 'face');
+  else if (ch === 'H') img = Sprites.tile(tileAt(x, y + 1) === 'H' ? 'Hup' : 'Hlow');
   else img = Sprites.tile(ch, v, tileUnder(x, y));
   ctx.drawImage(img, sx, sy);
 }
@@ -118,7 +125,10 @@ const Overworld = {
       ctx.strokeStyle = '#f8f8f8'; ctx.lineWidth = 1; ctx.strokeRect(gx + 2.5, gy + 2.5, 11, 11);
     }
     const ents = activeNpcs().map(n => ({ n, y: n.y * TS + n.oy, x: n.x * TS + n.ox }));
-    for (const d of (map.decor || [])) ents.push({ d, x: d.x * TS, y: (d.y + d.h - 1) * TS - (d.nosolid ? 0 : 0.5) });
+    for (const d of (map.decor || [])) {
+      if (d.under) Decor.draw(d, d.x * TS - camX, d.y * TS - camY);
+      else ents.push({ d, x: d.x * TS, y: (d.y + d.h - 1) * TS - (d.nosolid ? 0 : 0.5) });
+    }
     ents.push({ p: true, x: px, y: py });
     ents.sort((a, b) => a.y - b.y);
     for (const e of ents) {
@@ -227,7 +237,7 @@ function clickWorld(tx, ty) {
   if (tx === player.x && ty === player.y) return;
   const n = npcAt(tx, ty);
   const ch = tileAt(tx, ty);
-  const interesting = n || (map.signs && map.signs[`${tx},${ty}`]) || decorAt(tx, ty) || TILE_TEXT[ch === 'b' ? 'B' : ch];
+  const interesting = n || (map.signs && map.signs[`${tx},${ty}`]) || (decorAny(tx, ty) && Story.decorText(decorAny(tx, ty))) || TILE_TEXT[ch === 'b' ? 'B' : ch];
   let goals, target = null;
   if (!n && walkable(tx, ty)) goals = [[tx, ty]];
   else {
@@ -365,7 +375,7 @@ function interact() {
   if (n) { runScript(() => talkNpc(n)); return; }
   const sign = map.signs && map.signs[`${tx},${ty}`];
   if (sign) { runScript(() => typeof sign === 'function' ? sign() : sayAll(sign)); return; }
-  const d = decorAt(tx, ty);
+  const d = decorAny(tx, ty);
   if (d && Story.decorText(d)) { runScript(() => Story.decorText(d)()); return; }
   let ch = tileAt(tx, ty);
   if (ch === 'b') ch = 'B';
@@ -374,9 +384,27 @@ function interact() {
   if (t) runScript(() => typeof t === 'function' ? t() : sayAll(t));
 }
 
+function speakerOf(n) {
+  if (n.trainer) return n.trainer.title;
+  if (n.custom) return n.custom.nome.toUpperCase();
+  const t = typeof n.text === 'function' ? n.text() : n.text;
+  const first = Array.isArray(t) ? t[0] : t;
+  const m = first && /^([A-ZÀ-Ù0-9'. ]{3,}):/.exec(first);
+  return m ? m[1] : (n.speaker || '');
+}
+
+// I colleghi chiedono spesso se hai visto l'ufficio del Dott. Baldinazzo, e danno un indizio.
 async function sayHint(n) {
-  if (n.hint === undefined || game.flags.secretFound) return;
-  await say(HINTS[n.hint % HINTS.length]);
+  if (n.hint === undefined && !n.custom) return;
+  const who = speakerOf(n), pre = who ? who + ': ' : '';
+  const hint = HINTS[(n.hint !== undefined ? n.hint : Math.floor(Math.random() * HINTS.length)) % HINTS.length];
+  const found = !!game.flags.secretFound;
+  if (Math.random() < 0.65) {
+    const yes = await ask(pre + OFFICE_Q[Math.floor(Math.random() * OFFICE_Q.length)]);
+    const pool = found ? (yes ? OFFICE_YES_FOUND : OFFICE_NO_FOUND) : (yes ? OFFICE_YES_NOTFOUND : OFFICE_NO_NOTFOUND);
+    await say(pre + pool[Math.floor(Math.random() * pool.length)]);
+    if (!found) await say(pre + hint);
+  } else if (!found) await say(hint);
 }
 
 async function talkNpc(n) {

@@ -256,6 +256,19 @@ const Sprites = (() => {
       for (let y = 5; y < 9; y += 1) P.r(5, y, 6, 1, y % 2 ? '#7a7264' : '#3a3630');
       P.p(4, 4, '#c8c0b0'); P.p(11, 9, '#6a6254');
     },
+    'Hup': P => {
+      P.r(0, 0, 16, 16, '#24402f');
+      for (let x = 2; x < 16; x += 5) { P.r(x, 0, 1, 16, '#c8a050'); }
+      for (let y = 3; y < 16; y += 6) for (let x = 4; x < 16; x += 5) { P.p(x, y, '#3c6048'); P.p(x + 1, y + 1, '#3c6048'); }
+      P.r(0, 0, 16, 1, '#1a3022');
+    },
+    'Hlow': P => {
+      P.r(0, 0, 16, 7, '#24402f');
+      for (let x = 2; x < 16; x += 5) P.r(x, 0, 1, 7, '#c8a050');
+      P.r(0, 7, 16, 2, '#c8a050');
+      P.r(0, 9, 16, 7, '#6a3c1c'); P.r(1, 10, 6, 5, '#7c4a24'); P.r(9, 10, 6, 5, '#7c4a24');
+      P.r(0, 15, 16, 1, '#4a2810');
+    },
     'Z': P => {
       face(P);
       P.r(1, 1, 14, 10, '#8a8a90'); P.r(2, 2, 12, 8, '#f8f8f8');
@@ -429,14 +442,19 @@ const Sprites = (() => {
         if (pal.long) { P.r(3, 7 + hy, 1, 5, hair); P.r(12, 7 + hy, 1, 5, hair); }
         if (pal.spiky) { P.p(4, 0 + hy, hair); P.p(11, 0 + hy, hair); P.p(7, -1 + hy + 1, hair); }
         if (pal.quiff) { P.r(4, 0 + hy, 8, 2, hair); P.r(3, 1 + hy, 1, 4, hair); P.r(6, 0 + hy, 4, 1, '#3a3440'); P.r(4, 4 + hy, 1, 1, skin); P.r(11, 4 + hy, 1, 1, skin); }
+        if (pal.bald) { P.r(4, 0 + hy, 8, 4, skin); P.r(5, 0 + hy, 6, 1, skin); P.r(3, 4 + hy, 1, 3, hair); P.r(12, 4 + hy, 1, 3, hair); P.p(6, 1 + hy, '#ffffff'); }
+        if (pal.bun) { P.r(6, 0 + hy, 4, 1, hair); P.r(5, 0 + hy, 6, 1, hair); }
         if (pal.watch) P.p(3, 14 + bob, '#e0e0e8');
         P.r(6, 6 + hy, 1, 2, dk); P.r(9, 6 + hy, 1, 2, dk);
+        if (pal.eyes) { P.p(6, 7 + hy, pal.eyes); P.p(9, 7 + hy, pal.eyes); }
         if (pal.glasses) { P.r(5, 5 + hy, 3, 1, dk); P.r(8, 5 + hy, 3, 1, dk); }
         P.p(4, 8 + hy, '#f0a090'); P.p(11, 8 + hy, '#f0a090');
       } else {
         P.r(3, 1 + hy, 10, 8, hair); P.r(5, 0 + hy, 6, 1, hair);
         if (pal.long) P.r(3, 9 + hy, 10, 3, hair);
         if (pal.quiff) P.r(4, 0 + hy, 8, 1, hair);
+        if (pal.bald) { P.r(4, 0 + hy, 8, 6, skin); P.r(3, 6 + hy, 10, 3, hair); }
+        if (pal.bun) { P.r(6, 0 + hy, 4, 2, hair); P.r(7, 0 + hy, 2, 1, '#00000030'); }
       }
     } else {
       const f1 = fr === 1 ? 1 : fr === 2 ? -1 : 0;
@@ -453,7 +471,10 @@ const Sprites = (() => {
       if (pal.quiff) { P.r(4, 0 + hy, 9, 2, hair); P.r(11, 1 + hy, 2, 1, hair); P.r(7, 0 + hy, 3, 1, '#3a3440'); }
       if (pal.jacket) P.r(10, 10 + bob, 1, 3, shirt);
       if (pal.watch) P.p(7 - f1, 14 + bob, '#e0e0e8');
+      if (pal.bald) { P.r(4, 0 + hy, 8, 4, skin); P.r(4, 2 + hy, 3, 2, skin); P.r(3, 5 + hy, 3, 3, hair); P.p(8, 1 + hy, '#ffffff'); }
+      if (pal.bun) { P.r(2, 1 + hy, 3, 3, hair); }
       P.r(10, 6 + hy, 1, 2, dk);
+      if (pal.eyes) P.p(10, 7 + hy, pal.eyes);
       if (pal.glasses) P.r(9, 5 + hy, 3, 1, dk);
       P.p(12, 7 + hy, skin);
     }

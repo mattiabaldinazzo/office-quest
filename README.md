@@ -10,9 +10,9 @@ Gioco di ruolo in stile Pokémon per Game Boy Advance, ambientato in una societ�
 
 1. Reception al piano terra, poi il 5° piano: HR per il primo Officemon, Facility per PC, gadget, kit smart working e sneakers per correre.
 2. Software Factory al 1° piano, Assistenza IT al 2°, Rete e Logistica B2B al 3°. Ogni responsabile sconfitto abilita il badge per il piano successivo.
-3. Il Network Manager ti affida il dossier di lancio della nuova offerta: serve il via libera della sede staccata.
+3. Il Network Manager ti affida il dossier di lancio della nuova offerta: serve il via libera della Sede #2.
 4. Il viaggio attraversa Milano: la piazza delle fontane con la torre con la guglia, il bosco in verticale, il quartiere Isola. Cantieri, deviazioni e terre desolate.
-5. In sede staccata fai avanti e indietro tra Sales, Marketing e Customer Care fino alla firma.
+5. In Sede #2 fai avanti e indietro tra Sales, Marketing e Customer Care fino alla firma.
 6. Torni in sede, superi Finance, Tax, Legal e Controlling al 4° piano e sfidi l'Amministratore Delegato.
 
 ## Il Dott. Baldinazzo
@@ -23,7 +23,11 @@ Il Project Manager più esperto dell'azienda. Compare continuamente in giro per 
 - Ogni incontro: cosa sta facendo, una battuta, un consiglio legato al punto della storia, la scusa e l'uscita di scena
 - Se lo ignori, ti chiama lui
 - Il tesserino aziendale conta gli incontri; a 25, 50, 100, 150, 200, 300, 400 e 500 ci sono premi
-- **Easter egg:** il suo ufficio segreto. Ogni personaggio dà un indizio.
+- **Easter egg:** il suo ufficio segreto. I colleghi chiedono spesso se ci sei già stato e danno un indizio. Dentro: la lavagna con i progetti in codice, la poltrona chesterfield, la lampada da biblioteca, quadri, un telefono rosso, una cassaforte con combinazione, un gatto e altre sorprese.
+
+## Aggiungere personaggi
+
+Ogni file JSON nella cartella [`characters/`](characters/) aggiunge un collega: nome, ruolo, carattere, percentuale di incontri, piani, capelli e occhi. Il vestito è casuale. Le istruzioni sono in [`characters/README.md`](characters/README.md).
 
 ## Comandi
 
@@ -42,7 +46,7 @@ Su smartphone in verticale la console occupa tutto lo schermo. Per giocare senza
 
 ## Contenuti
 
-- 17 mappe: 7 piani della sede principale, ufficio dell'AD, cunicolo e ufficio segreto, 4 zone di Milano, sede staccata su 2 piani
+- 17 mappe: 7 piani della sede principale, ufficio dell'AD, cunicolo e ufficio segreto, 4 zone di Milano, Sede #2 su 2 piani
 - 22 Officemon in 4 tipi: SEGNALE, FIBRA, CARTA, UFFICIO
 - Tabella dei tipi: la FIBRA batte il SEGNALE, il SEGNALE batte la CARTA, la CARTA batte la FIBRA
 - Starter: Simmetta (SIM), Simbox (totem self service), Routerino (modem tondo)
@@ -67,7 +71,9 @@ js/battle.js        sistema di lotta
 js/bald.js          comparse, scene animate e dialoghi del Dott. Baldinazzo
 js/world.js         esplorazione, ascensore, collisioni, interazioni
 js/story.js         eventi e missioni
+js/characters.js    personaggi aggiuntivi caricati dai JSON
 js/main.js          menu, salvataggi, titolo, introduzione, titoli di coda
+characters/         un file JSON per ogni personaggio aggiuntivo
 ```
 
 Nessuna dipendenza e nessun passaggio di build. Per provarlo in locale:

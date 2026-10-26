@@ -9,7 +9,7 @@ const BALD_EXCUSES = [
   'Perdonami, devo approvare tre richieste di ferie prima che scadano. Le ferie sono sacre.',
   'Ho una retrospettiva tra due minuti. Devo ancora decidere cosa è andato bene. Tutto, ovviamente.',
   'Scusa, il server di posta mi ha mandato un messaggio. Il server. Personalmente. Devo andare.',
-  'Devo scappare in sede staccata. Parto ora, arrivo stasera. Forse.',
+  'Devo scappare in Sede #2. Parto ora, arrivo stasera. Forse.',
   'Mi aspettano al quarto piano per una "chiacchierata veloce". Ci vediamo domani.',
   'Ho lasciato il caffè sulla scrivania. Si sta raffreddando. È un\'emergenza.',
   'Scusa, devo firmare un documento in triplice copia. Le altre due copie le ho perse.',
@@ -70,7 +70,7 @@ const BALD_EXCUSES = [
   'Ho un appuntamento con il mio mentore. Ha 92 anni e conosce tutti i segreti delle telecomunicazioni.',
   'Corro a consegnare un premio al dipendente del mese. Non sono io. Stavolta.',
   'Scusami, devo andare a tagliare il nastro di una nuova sala relax. Porto le forbici d\'oro.',
-  'Devo scappare, c\'è una delegazione dalla sede staccata. Sono arrivati stanchissimi.',
+  'Devo scappare, c\'è una delegazione dalla Sede #2. Sono arrivati stanchissimi.',
   'Mi aspetta il team per il pranzo. Se arrivo tardi ordinano senza di me. È già successo.',
   'Ho una riunione in piedi, una seduta e una in movimento. Tutte nello stesso quarto d\'ora.',
   'Scusa, devo aggiornare la roadmap. La strada è lunga, ma la mappa la faccio io.',
@@ -91,7 +91,7 @@ const BALD_EXCUSES = [
   'Devo andare a fare la spesa per la cena di team. Trenta pizze e un\'insalata, per sicurezza.',
   'Scusami, ho prenotato un campo da padel in pausa pranzo. Si gioca in coppia con il CFO.',
   'Devo scappare, c\'è un piccione chiuso in sala riunioni. Ha preso parte a due call.',
-  'Ho un aggiornamento urgente: il caffè della sede staccata è finito. È una crisi.',
+  'Ho un aggiornamento urgente: il caffè della Sede #2 è finito. È una crisi.',
   'Mi aspetta una masterclass di negoziazione. La tengo io.',
   'Scusa, devo mandare gli auguri di buon onomastico a tutti i colleghi che si chiamano come il santo di oggi. Sono tanti.',
   'Devo andare: il mio orologio mi ricorda che devo bere un bicchiere d\'acqua. Gli obbedisco sempre.',
@@ -208,7 +208,7 @@ const BALD_TIPS = {
     'Non sottovalutare un Officemon di livello basso: con il tipo giusto può battere avversari più forti.',
     'Il ripetitore Wi-Fi ripete tutto. Anche le mosse. Ma più lentamente. Usalo per resistere.',
     'In lotta puoi sempre fuggire dagli Officemon selvatici. Dagli allenatori no: tra colleghi si lotta fino in fondo.',
-    'La sede staccata è lontana. Prima di partire, compra tutto quello che ti serve.',
+    'La Sede #2 è lontana. Prima di partire, compra tutto quello che ti serve.',
     'Esplora ogni angolo: negli uffici ci sono oggetti dimenticati che fanno comodo.',
     'Ogni dieci volte che mi incontri ti lascio qualcosa nella tasca della giacca. Non chiedermi come.',
     'Le mosse con precisione 90 a volte falliscono. Quelle con precisione 100 mai. Scegli in base al rischio.',
@@ -217,7 +217,7 @@ const BALD_TIPS = {
     'Quando non sai cosa fare, parla con le persone. Funziona in azienda e funziona qui.',
     'Il -1 è il piano più sottovalutato del palazzo. Dico solo questo.'
   ],
-  start: ['La Dott.ssa Ondina dell\'HR è al quinto piano. Prendi l\'ascensore e vai da lei.'],
+  start: ['La Dott.ssa Onboardini dell\'HR è al quinto piano. Prendi l\'ascensore e vai da lei.'],
   kit: [
     'Hai il tuo primo Officemon? Ora vai al Facility, nella stanza accanto all\'HR: ti danno la dotazione di lavoro.',
     'Il Facility ti dà le sneakers aziendali. Con quelle corri tenendo premuto B. Un must.',
@@ -243,16 +243,16 @@ const BALD_TIPS = {
     'Dopo il NETWORK MANAGER ti aspetta un viaggio lungo. Molto lungo. Fai scorta prima.'
   ],
   trip: [
-    'Per la sede staccata esci dalla reception, prendi le strisce pedonali e vai verso est. Dopo, la piazza delle fontane.',
+    'Per la Sede #2 esci dalla reception, prendi le strisce pedonali e vai verso est. Dopo, la piazza delle fontane.',
     'Nella piazza delle fontane l\'uscita verso il bosco è chiusa. Gira dal retro, passando dal prato.',
     'Nel bosco in verticale ci sono cantieri ovunque. Le recinzioni hanno sempre un varco: cercalo in basso.',
     'All\'Isola il marciapiede nord è chiuso. Attraversa, passa dall\'ex scalo e riattraversa più avanti.',
     'Le strade non si attraversano fuori dalle strisce. Le auto qui non perdonano. Neanche i vigili.',
     'Al chiosco della via e al bar dell\'Isola puoi rimettere in forma la squadra e fare acquisti.',
     'Il viaggio è lungo, ma è anche bellissimo. Guarda la torre con la guglia, gli alberi sulle torri. Poi corri.',
-    'La sede staccata è l\'edificio con la scritta SEDE 2, all\'Isola. L\'ingresso è la porta a vetri.'
+    'La Sede #2 è l\'edificio con la scritta SEDE #2, all\'Isola. L\'ingresso è la porta a vetri.'
   ],
-  sede0: ['Appena arrivi in sede staccata, sali al primo piano e parla con la DIRETTRICE SALES, nella prima stanza.'],
+  sede0: ['Appena arrivi in Sede #2, sali al primo piano e parla con la DIRETTRICE SALES, nella prima stanza.'],
   sede1: ['Sales vuole la brochure. La brochure la fa Marketing, nella stanza in mezzo. Vai e preparati a una lotta.'],
   sede2: ['Marketing vuole i feedback dei clienti. Li ha il Customer Care, nell\'ultima stanza a destra.'],
   sede3: ['Il Customer Care vuole i volumi di vendita. Torna da Sales, nella prima stanza. Sì, di nuovo. Benvenuto in azienda.'],
@@ -287,3 +287,59 @@ const BALD_MILESTONES = {
   400: { text: ['Quattrocento incontri!', 'DOTT. BALDINAZZO: Quattrocento. A questo punto dovresti essere tu a darmi i consigli.', '{NAME} riceve 10 RICARICHE GIGA!'], items: [['ricarica', 10]] },
   500: { text: ['CINQUECENTO incontri con il Dott. Baldinazzo!', 'DOTT. BALDINAZZO: Cinquecento. Hai visto tutto quello che faccio. Le bolle, il ping pong, le esplosioni, il palco. Tutto.', 'DOTT. BALDINAZZO: Sei ufficialmente il mio collega preferito. Non dirlo agli altri. Anzi, dillo pure.', '{NAME} riceve il titolo di MIGLIOR COLLEGA DI SEMPRE!'], items: [['ricarica', 10], ['cornetto', 10]], flag: 'baldDiamond' }
 };
+
+// Domande dei colleghi sull'ufficio segreto e reazioni alle risposte.
+const OFFICE_Q = [
+  'Ehi, una domanda: hai già visitato l\'ufficio del Dott. Baldinazzo?',
+  'Dimmi la verità: sei mai stato nell\'ufficio del Dott. Baldinazzo?',
+  'Ma tu l\'hai visto l\'ufficio segreto del Dott. Baldinazzo?',
+  'Sei per caso entrato nell\'ufficio del Dott. Baldinazzo? Tutti ne parlano.',
+  'Scusa se te lo chiedo: hai trovato l\'ufficio del Dott. Baldinazzo?',
+  'Domanda da un milione di buoni pasto: sei stato nell\'ufficio del Dott. Baldinazzo?',
+  'Lo chiedo a tutti: hai mai messo piede nell\'ufficio del Dott. Baldinazzo?'
+];
+const OFFICE_YES_FOUND = [
+  'Davvero?! E com\'è? È vero che ha tre monitor e una lavagna con i progetti segreti?',
+  'Lo sapevo! Hai la faccia di chi ha visto la poltrona in pelle. È comoda come dicono?',
+  'Incredibile. E il gatto della vigilanza dormiva lì? Lo cercano da tre settimane.',
+  'E il cartello "Torno subito" c\'era? È lì dal 2019, dicono.',
+  'Wow. Raccontami della lavagna. No, aspetta, non dirmi niente: voglio scoprirlo da solo.',
+  'Hai risposto al telefono rosso? Io non avrei avuto il coraggio.',
+  'Sei ufficialmente una leggenda dell\'ufficio. Posso stringerti la mano?'
+];
+const OFFICE_NO_FOUND = [
+  'Ah no? Strano, il tuo tesserino profuma di libri antichi e caffè. Va bene, facciamo finta di niente.',
+  'Modesto! Il gatto della vigilanza ha detto a tutti che ti ha visto.',
+  'Capisco, segreto professionale. Rispetto.',
+  'Mmh. Hai ancora un po\' di polvere della griglia del -1 sulla giacca, sai?'
+];
+const OFFICE_YES_NOTFOUND = [
+  'Mmh, sicuro? Nessuno l\'ha mai trovato. Secondo me hai visto lo sgabuzzino delle scope.',
+  'Davvero? Allora dimmi di che colore è la poltrona. Non lo sai, eh? Ti do un aiutino.',
+  'Ma dai! Il tuo badge dice il contrario. Comunque, se vuoi trovarlo davvero...',
+  'Sicuro sicuro? Dicono che chi lo trova ne esca con un sorriso diverso. Tu sorridi normale.'
+];
+const OFFICE_NO_NOTFOUND = [
+  'Nemmeno io. Però ti dico quello che so.',
+  'Neanche io, ma ho sentito delle voci.',
+  'Tranquillo, sei in buona compagnia. Ti do un indizio, però.',
+  'Peccato! Dicono che sia l\'ufficio più bello di Milano. Ascolta qua.',
+  'Io ci ho provato per due anni. Magari tu sei più fortunato.'
+];
+
+// La lavagna dei progetti del Dott. Baldinazzo, con i nomi in codice.
+const BALD_PROJECTS = [
+  { code: 'CIUFFO D\'ORO', pct: 100, note: 'Manutenzione ordinaria e straordinaria del ciuffo. Stato: sempre perfetto.' },
+  { code: 'FENICE', pct: 87, note: 'Far rinascere la stampante del secondo piano. Ha già stampato una pagina intera.' },
+  { code: 'TELETRASPORTO', pct: 3, note: 'Collegare la sede principale alla Sede #2 in meno di un\'ora. Bloccato da: la fisica.' },
+  { code: 'LATENZA NEG.', pct: 12, note: 'LATENZA NEGATIVA: arrivare alle riunioni prima che vengano convocate.' },
+  { code: 'SCUSA FINALE', pct: 99, note: 'SCUSA FINALE: la scusa definitiva per uscire da qualsiasi call. Manca solo la pronuncia.' },
+  { code: 'CAFFÈ INFINITO', pct: 41, note: 'Una macchinetta che non si svuota mai. Rischio: l\'intera azienda smette di dormire.' },
+  { code: 'PING PONG OLIMPICO', pct: 64, note: 'Candidare l\'area break del -1 come sede olimpica. Il CIO non ha ancora risposto.' },
+  { code: 'GANTT FELICE', pct: 0, note: 'Un diagramma di Gantt con tutte le barre verdi. Stato: leggenda metropolitana.' },
+  { code: 'TRAM 33', pct: 1, note: 'Far ripartire il tram arancione fermo davanti alla sede. Il tranviere sta ancora leggendo il giornale.' },
+  { code: 'BOLLA ETERNA', pct: 78, note: 'Una bolla di sapone che dura più di una riunione di budget. Record attuale: 47 minuti.' },
+  { code: 'POLTRONISSIMA', pct: 22, note: 'Convincere la poltrona dell\'AD a cambiare ufficio. Trattativa in corso.' },
+  { code: 'NUOVO ASSUNTO', pct: 100, note: 'Tenere d\'occhio il nuovo assunto. Cioè tu. Valutazione: ottimo lavoro.' },
+  { code: 'NOME IN CODICE', pct: 50, note: 'Trovare un nome in codice per questo progetto. Siamo a metà.' }
+];

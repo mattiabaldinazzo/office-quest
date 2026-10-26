@@ -1,0 +1,13 @@
+{
+  "nome": "Bruno Backup",
+  "ruolo": "Sistemista",
+  "carattere": "brontolone",
+  "percentuale_incontri": 25,
+  "piani": ["2", "3"],
+  "capelli": { "colore": "grigi", "acconciatura": "calvo" },
+  "occhi": "castani",
+  "frasi": [
+    "Hai fatto il backup? No? Allora non parlarmi.",
+    "Il server non è lento. Sei tu che vai troppo veloce."
+  ]
+}

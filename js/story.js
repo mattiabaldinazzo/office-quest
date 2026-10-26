@@ -27,7 +27,7 @@ const Story = {
     if (mapId === 'sede2pt' && !game.flags.arrivedSede) {
       game.flags.arrivedSede = true;
       await sayAll([
-        `Finalmente! Dopo cantieri, deviazioni e Terre Desolate, ${game.name} arriva alla SEDE STACCATA.`,
+        `Finalmente! Dopo cantieri, deviazioni e Terre Desolate, ${game.name} arriva alla SEDE #2.`,
         'Il viaggio è durato più di una riunione di budget. Il che è tutto dire.'
       ]);
     }
@@ -45,7 +45,7 @@ const Story = {
       await sayAll([
         'NETWORK MANAGER: Ottimo lavoro. Ora ti affido una missione delicata.',
         'NETWORK MANAGER: L\'AD vuole lanciare la nuova offerta FIBRA LATENZA ZERO. Serve il via libera di Sales, Marketing e Customer Care.',
-        'NETWORK MANAGER: Lavorano tutti nella SEDE STACCATA. Prendi questo DOSSIER e portalo lì.'
+        'NETWORK MANAGER: Lavorano tutti nella SEDE #2. Prendi questo DOSSIER e portalo lì.'
       ]);
       game.flags.dossier = true;
       Sound.sfx('fanfare');
@@ -65,15 +65,38 @@ const Story = {
       calcetto: ['Un calcio balilla. Le stecche sono consumate da mille derby tra Sales e IT.'],
       desk3: ['Tre monitor accesi. Primo: NPS 87, churn in calo del 2,1%. Secondo: 12.480 attivazioni oggi. Terzo: uptime 99,999%.', 'Sotto la tastiera c\'è un post-it: "Le dashboard dicono cosa succede. Le persone dicono perché. Dott. B."'],
       chair: ['La sedia da ufficio più ergonomica che tu abbia mai visto. Meglio non sedersi: è chiaramente la sua.'],
-      sign: ['Il cartello dice: TORNO SUBITO.', 'Sotto, scritto più piccolo: "Subito è un concetto relativo. Dott. B."'],
+      sign: ['Il cartello sulla sedia dice: TORNO SUBITO.', 'Sotto, scritto più piccolo: "Subito è un concetto relativo. Dott. B."'],
       sede: [`La sede di ${COMPANY} Vetro, acciaio e un badge che non funziona mai al primo colpo.`],
       torre: ['Una torre di vetro altissima con una guglia che punta al cielo. Dall\'ultimo piano, dicono, si vede tutta la città.'],
       vetro: ['Un grattacielo di vetro. Ci si specchiano le nuvole, i piccioni e i manager in pausa.'],
       bosco: ['Una torre ricoperta di alberi, balcone dopo balcone. Un bosco in verticale. Ogni tanto cade una foglia su un monopattino.'],
       palazzo: ['Un palazzo colorato del quartiere. Al piano terra c\'è un bar con dieci tipi di spritz e un solo tipo di Wi-Fi: lento.'],
       tram: ['Un vecchio tram arancione con le panche di legno. È fermo. Il tranviere dice che riparte "a breve".'],
-      gru: ['Una gru gigante. Si muove piano piano, come un project plan in ritardo.']
+      gru: ['Una gru gigante. Si muove piano piano, come un project plan in ritardo.'],
+      board: () => studioBoard(),
+      quadro: () => sayAll({
+        ritratto: ['Un ritratto a olio del Dott. Baldinazzo, in posa da condottiero rinascimentale. Il ciuffo è dipinto con foglia d\'oro.', 'Targhetta: "Il Project Manager, olio su tela, autore anonimo (lui)".'],
+        paddle: ['Una racchetta da ping pong placcata oro, appesa come un cimelio.', 'Targhetta: "Finale del -1, 47 a 45 ai vantaggi. Due ore e dodici minuti. Mai dimenticare."'],
+        gioconda: ['Una Gioconda che, al posto delle mani, tiene un modem tondo. Il sorriso è più misterioso del solito.', 'Targhetta: "La Connessa". Il Wi-Fi si chiama "Leonardo_5G".'],
+        notte: ['Un cielo stellato blu e giallo, con un\'antenna al posto del cipresso.', 'Targhetta: "Notte stellata con copertura 5G".'],
+        diploma: ['Un diploma incorniciato: "Laurea in Gantt applicati. 110 e lode con bacio accademico e applauso della commissione".', 'Sotto, un secondo foglio: "Master in Scuse Eleganti per Uscire dalle Call. Con menzione."']
+      }[d.v] || ['Un quadro.']),
+      scritta: () => sayAll([`Sul muro, in lettere dorate: "${d.text}".`, 'Sotto, più piccolo, a matita: "e anche il caffè".']),
+      tappeto: () => studioRug(),
+      poltrona: () => sayAll(['Una poltrona chesterfield in pelle, con i bottoni capitonné. Profuma di cuoio e decisioni importanti.', 'Ti siedi un istante. Ti senti subito più autorevole. Ti rialzi prima che torni lui.']),
+      lampada: () => sayAll(['Una lampada da lettura in ottone con il paralume verde, da biblioteca inglese.', 'Fa una luce calda che rende tutto più elegante. Anche i fogli Excel.']),
+      mappamondo: () => sayAll(['Un mappamondo antico. Lo fai girare...', ['Si ferma sulla Sede #2. Il mappamondo ha senso dell\'umorismo.', 'Si ferma sull\'oceano Pacifico. Nessuna copertura. Il sogno di ogni PM in ferie.', 'Si ferma su Milano. C\'è un puntino rosso disegnato a penna: "-1, griglia".'][Math.floor(Math.random() * 3)]]),
+      pendolo: () => { Sound.sfx('shake'); return sayAll(['Un orologio a pendolo alto fino al soffitto. Tic. Tac.', 'Segna sempre le 18:59. Il Dott. Baldinazzo dice che è l\'ora perfetta per una call "veloce".']); },
+      trofei: () => sayAll(['Una vetrina di trofei.', 'Coppa d\'oro: "Campione di calcio balilla del -1, dieci anni di fila". Medaglia: "Miglior scusa per uscire da una call, edizione 2023".', 'Targa: "Project Manager dell\'anno". Più piccola: "Ciuffo dell\'anno". Più piccola ancora: "Ha risposto a tutte le email di agosto".']),
+      appendiabiti: () => sayAll(['Un appendiabiti con tre giacche: due blu notte identiche e una bordeaux.', 'Su un biglietto: "Blu notte per i giorni normali. Bordeaux per le occasioni speciali. Tipo il giovedì."']),
+      grammofono: () => { Sound.sfx('heal'); return sayAll(['Un grammofono d\'epoca. Appoggi la puntina...', 'Parte un valzer lento suonato da un\'orchestra di modem. È sorprendentemente bello.']); },
+      carrello: () => sayAll(['Un carrello bar in ottone. Una caraffa di cristallo con l\'etichetta "Chinotto d\'annata, 2009".', 'Accanto, una ciotola di noccioline e un biglietto: "Solo per le riunioni che finiscono in orario. Quindi mai".']),
+      cassaforte: () => studioSafe(),
+      telefono: () => studioPhone(),
+      macchina: () => sayAll(['Una macchina da scrivere con un foglio infilato. È l\'inizio di un\'autobiografia:', '"Capitolo 1. Il giorno in cui inventai la latenza zero. Era un martedì. Pioveva. Il Wi-Fi no."']),
+      gatto: () => sayAll(['Il gatto della vigilanza dorme acciambellato sotto la poltrona.', 'Ha un collarino con una medaglietta: "CAPO DELLA SICUREZZA". Apre un occhio, ti riconosce, lo richiude. Approvato.'])
     }[d.k];
+    if (typeof T === 'function') return T;
     return T ? () => sayAll(T) : null;
   },
   async studioBooks() {
@@ -87,7 +110,7 @@ const Story = {
       '"Excel avanzato per persone pazienti".',
       '"Il ciuffo perfetto: manutenzione ordinaria e straordinaria". Molto consumato.',
       '"Storia delle SIM: dal formato carta di credito alla eSIM".',
-      '"L\'arte di arrivare in sede staccata". Ha solo un capitolo: "Non farlo".',
+      '"L\'arte di arrivare in Sede #2". Ha solo un capitolo: "Non farlo".',
       '"Leadership gentile in 7 passi".',
       '"Agile, ma non troppo".',
       '"Ping pong e strategia aziendale". Con appunti a matita.',
@@ -105,7 +128,8 @@ async function secretFound() {
   await sayAll([
     'Una stanza nascosta, calda e silenziosa. Profumo di libri e di caffè appena fatto.',
     `${game.name} ha trovato l'UFFICIO SEGRETO DEL DOTT. BALDINAZZO!`,
-    'Tre monitor accesi pieni di dashboard, una libreria enorme, una sedia da ufficio e un cartello: TORNO SUBITO.',
+    'Tre monitor accesi pieni di dashboard, una libreria enorme, una poltrona in pelle, quadri antichi, una grande lavagna e un cartello: TORNO SUBITO.',
+    'Il gatto della vigilanza dorme sotto la poltrona. Ti guarda come per dire: "Finalmente."',
     'Sulla scrivania c\'è un biglietto: "Se sei arrivato fin qui, sei curioso e testardo. Le qualità migliori di un collega. Prendi pure. Dott. B."'
   ]);
   game.bag.ricarica += 3; game.bag.cornetto += 2; game.bag.contratto += 5; game.money += 3000;
@@ -116,10 +140,10 @@ async function secretFound() {
 // ---------- Piano terra ----------
 async function receptTalk() {
   const f = game.flags;
-  if (!f.starter) await sayAll([`RECEPTIONIST SORRISO: Benvenuto in ${COMPANY}! Tu devi essere ${game.name}, il nuovo assunto.`, 'RECEPTIONIST SORRISO: Sali con l\'ascensore al 5° piano: la Dott.ssa ONDINA delle Risorse Umane ti aspetta.']);
+  if (!f.starter) await sayAll([`RECEPTIONIST SORRISO: Benvenuto in ${COMPANY}! Tu devi essere ${game.name}, il nuovo assunto.`, 'RECEPTIONIST SORRISO: Sali con l\'ascensore al 5° piano: la Dott.ssa ONBOARDINI delle Risorse Umane ti aspetta.']);
   else if (!f.kit) await say('RECEPTIONIST SORRISO: Hai già ritirato la dotazione al Facility? È al 5° piano, accanto all\'HR.');
   else if (!f.dossier) await say('RECEPTIONIST SORRISO: Al -1 c\'è l\'area break con ping pong e calcio balilla. Ufficialmente è per le pause. Ufficiosamente è dove si decide tutto.');
-  else if (!f.badge4) await say('RECEPTIONIST SORRISO: In sede staccata? Ti preparo un panino. Anzi due. Il viaggio è lungo.');
+  else if (!f.badge4) await say('RECEPTIONIST SORRISO: In Sede #2? Ti preparo un panino. Anzi due. Il viaggio è lungo.');
   else if (!f.champion) await say('RECEPTIONIST SORRISO: Il tuo badge ora apre il 4° piano. L\'AD ti aspetta!');
   else await say(`RECEPTIONIST SORRISO: Buongiorno, capo! Le preparo un caffè?`);
 }
@@ -133,29 +157,29 @@ async function hrTalk() {
   const f = game.flags;
   if (!f.metHR) {
     await sayAll([
-      `ONDINA: Eccoti, ${game.name}! Benvenuto in ${COMPANY} Sono la Dott.ssa ONDINA, Risorse Umane.`,
-      'ONDINA: Qui il lavoro lo fanno insieme a noi gli OFFICEMON: SIM, modem, cavi, graffette... oggetti che hanno preso vita.',
-      'ONDINA: Ogni nuovo assunto riceve il suo primo Officemon. Sul tavolo qui sotto ci sono tre cartelline.',
-      'ONDINA: SIMMETTA è di tipo SEGNALE, SIMBOX di tipo CARTA, ROUTERINO di tipo FIBRA. Scegli con cura!'
+      `ONBOARDINI: Eccoti, ${game.name}! Benvenuto in ${COMPANY} Sono la Dott.ssa ONBOARDINI, Risorse Umane.`,
+      'ONBOARDINI: Qui il lavoro lo fanno insieme a noi gli OFFICEMON: SIM, modem, cavi, graffette... oggetti che hanno preso vita.',
+      'ONBOARDINI: Ogni nuovo assunto riceve il suo primo Officemon. Sul tavolo qui sotto ci sono tre cartelline.',
+      'ONBOARDINI: SIMMETTA è di tipo SEGNALE, SIMBOX di tipo CARTA, ROUTERINO di tipo FIBRA. Scegli con cura!'
     ]);
     f.metHR = true;
     return;
   }
-  if (!f.starter) { await say('ONDINA: Allora? Scegli una delle cartelline sul tavolo!'); return; }
+  if (!f.starter) { await say('ONBOARDINI: Allora? Scegli una delle cartelline sul tavolo!'); return; }
   healAll();
   Sound.sfx('heal');
-  if (!f.kit) await say('ONDINA: Ho rimesso in forma la tua squadra. Ora vai dal Facility, qui accanto: ti danno la dotazione di lavoro.');
+  if (!f.kit) await say('ONBOARDINI: Ho rimesso in forma la tua squadra. Ora vai dal Facility, qui accanto: ti danno la dotazione di lavoro.');
   else if (!f.champion) await sayAll([
-    'ONDINA: Ho rimesso in forma la tua squadra.',
-    'ONDINA: Ricorda: la FIBRA batte il SEGNALE, il SEGNALE batte la CARTA e la CARTA batte la FIBRA. L\'UFFICIO è neutrale, come la Svizzera.'
+    'ONBOARDINI: Ho rimesso in forma la tua squadra.',
+    'ONBOARDINI: Ricorda: la FIBRA batte il SEGNALE, il SEGNALE batte la CARTA e la CARTA batte la FIBRA. L\'UFFICIO è neutrale, come la Svizzera.'
   ]);
-  else await say('ONDINA: Il nostro nuovo CAPO REPARTO! Lo sapevo dal primo colloquio. Squadra rimessa in forma.');
+  else await say('ONBOARDINI: Il nostro nuovo CAPO REPARTO! Lo sapevo dal primo colloquio. Squadra rimessa in forma.');
 }
 
 async function folderTalk(n) {
   const S = SPECIES[n.sp], name = S.name.toUpperCase();
   if (game.flags.starter) { await say(`È la cartellina di ${name}. Resterà qui all'HR, al sicuro.`); return; }
-  if (!game.flags.metHR) { await say('Tre cartelline personali. Meglio parlare prima con la Dott.ssa ONDINA.'); return; }
+  if (!game.flags.metHR) { await say('Tre cartelline personali. Meglio parlare prima con la Dott.ssa ONBOARDINI.'); return; }
   const pic = push(picLayer(n.sp));
   await say(S.desc);
   const yes = await ask(`Vuoi ${name}, l'Officemon di tipo ${TYPES[S.type].name}?`);
@@ -166,7 +190,7 @@ async function folderTalk(n) {
   game.party.push(makeMon(n.sp, 5));
   Sound.sfx('fanfare');
   await say(`${game.name} riceve ${name}!`);
-  await say(`ONDINA: ${name} sembra già affezionato a te!`);
+  await say(`ONBOARDINI: ${name} sembra già affezionato a te!`);
   const kev = npcById('kevin');
   const rsp = RIVAL_PICK[n.sp], rname = SPECIES[rsp].name.toUpperCase();
   kev.dir = 'left';
@@ -180,14 +204,14 @@ async function folderTalk(n) {
   else await say('KEVIN: Ah-ha! Lo sapevo, sono nato per questo lavoro!');
   healAll();
   Sound.sfx('heal');
-  await say('ONDINA: Che energia! Vi ho rimesso in sesto entrambi. Prendete anche questi.');
+  await say('ONBOARDINI: Che energia! Vi ho rimesso in sesto entrambi. Prendete anche questi.');
   game.bag.contratto += 5;
   game.bag.caffe += 3;
   Sound.sfx('fanfare');
   await say(`${game.name} riceve 5 CONTRATTI e 3 CAFFÈ!`);
   await sayAll([
-    'ONDINA: Con i CONTRATTI potete assumere gli Officemon selvatici. Indeboliteli prima di proporre la firma!',
-    'ONDINA: Ora passate dal Facility, nella stanza qui accanto: vi danno PC, gadget e kit per lo smart working.',
+    'ONBOARDINI: Con i CONTRATTI potete assumere gli Officemon selvatici. Indeboliteli prima di proporre la firma!',
+    'ONBOARDINI: Ora passate dal Facility, nella stanza qui accanto: vi danno PC, gadget e kit per lo smart working.',
     `KEVIN: Ci vediamo ai piani bassi, ${game.name}! Io corro, tu cammina.`
   ]);
   await fadeOut(10);
@@ -236,7 +260,7 @@ async function adTalk() {
   if (!game.flags.champion) {
     await sayAll([
       `AD: Benvenuto. Quindi sei tu ${game.name}. Il collega di cui parla tutta l'azienda.`,
-      'AD: Hai portato il via libera della sede staccata, hai l\'ok della Direzione. Resta una cosa sola.',
+      'AD: Hai portato il via libera della Sede #2, hai l\'ok della Direzione. Resta una cosa sola.',
       'AD: Dimostrami che sai guidare una squadra quando la rete è sotto pressione. Lotta!'
     ]);
     const r = await startBattle({ trainer: TRAINERS.ad, boss: true });
@@ -259,15 +283,15 @@ async function adTalk() {
   }
 }
 
-// ---------- Sede staccata ----------
+// ---------- Sede #2 ----------
 async function recept2Talk() {
-  await say('RECEPTIONIST DELLA SEDE 2: Benvenuto in sede staccata! Sales, Marketing e Customer Care sono al primo piano. Le scale sono lì in alto.');
-  if (game.party.length && await ask('RECEPTIONIST DELLA SEDE 2: Il viaggio ti ha distrutto, vero? Vuoi un caffè per la squadra?')) {
+  await say('RECEPTIONIST DELLA SEDE #2: Benvenuto in Sede #2! Sales, Marketing e Customer Care sono al primo piano. Le scale sono lì in alto.');
+  if (game.party.length && await ask('RECEPTIONIST DELLA SEDE #2: Il viaggio ti ha distrutto, vero? Vuoi un caffè per la squadra?')) {
     healAll();
     game.heal = { map: curMapId, x: player.x, y: player.y, dir: player.dir };
     Sound.sfx('heal');
     await flashScreen();
-    await say('RECEPTIONIST DELLA SEDE 2: Ecco fatto. Torna quando vuoi: qui il caffè è gratis, il Wi-Fi un po\' meno.');
+    await say('RECEPTIONIST DELLA SEDE #2: Ecco fatto. Torna quando vuoi: qui il caffè è gratis, il Wi-Fi un po\' meno.');
   }
 }
 
@@ -370,4 +394,59 @@ async function ccTalk() {
   } else {
     await say('HEAD OF CUSTOMER CARE NPS: Il segreto del customer care? Ascoltare. E avere sempre un caffè a portata di mano.');
   }
+}
+
+// ---------- Ufficio segreto: oggetti interattivi ----------
+async function studioBoard() {
+  await say('Una grande lavagna: "PROGETTI TOP SECRET DEL DOTT. B." Ogni progetto ha un nome in codice e una barra di avanzamento.');
+  const list = BALD_PROJECTS.map(p => `${p.code}  ${p.pct}%`);
+  let i = 0;
+  for (;;) {
+    const k = await choose([...list, 'CHIUDI'], { cancel: list.length, start: i, size: 5, lh: 9, x: 40, y: 2, w: 196 });
+    if (k === list.length) break;
+    i = k;
+    const p = BALD_PROJECTS[k];
+    await say(`PROGETTO ${p.code.toUpperCase()} (${p.pct}%): ${p.note}`);
+  }
+  await say('In fondo alla lavagna, scritto in piccolo: "Prossima revisione di avanzamento: quando torno. Cioè subito."');
+}
+
+async function studioRug() {
+  if (game.flags.rugNote) { await say('Un tappeto persiano rosso e oro. Sotto l\'angolo sollevato non c\'è più niente.'); return; }
+  game.flags.rugNote = true;
+  await sayAll(['Un tappeto persiano rosso e oro. Un angolo è leggermente sollevato...', 'Sotto c\'è un post-it: "Se hai sollevato il tappeto, sei curioso come me. Tieni, offro io. Dott. B."']);
+  game.bag.espresso += 3;
+  Sound.sfx('fanfare');
+  await say(`${game.name} trova 3 ESPRESSI DOPPI!`);
+}
+
+async function studioSafe() {
+  await say('Una piccola cassaforte di ghisa con una rotella dorata.');
+  if (game.flags.safeOpen) { await say('È aperta e vuota. Dentro è rimasto solo un biglietto: "Ricetta del mio caffè: segreta anche per me".'); return; }
+  if (!await ask('Provi a indovinare la combinazione?')) return;
+  const codes = ['0000', '1234', 'LATENZA ZERO', 'CIUFFO'];
+  const k = await choose(codes, { cancel: -1 });
+  if (k === 3) {
+    game.flags.safeOpen = true;
+    Sound.sfx('catch');
+    await sayAll(['Clic! La cassaforte si apre.', 'Dentro: una pila di buoni pasto e un biglietto: "Pensavi ci fossero gioielli? Il vero tesoro è il team. E questi buoni pasto."']);
+    game.money += 5000; game.bag.ricarica += 2;
+    Sound.sfx('coin');
+    await say(`${game.name} riceve 5000 buoni pasto e 2 RICARICHE GIGA!`);
+  } else if (k >= 0) {
+    Sound.sfx('bump');
+    await say(['Niente. Troppo facile, la sua password non sarebbe mai così banale.', 'Niente. Forse la combinazione ha a che fare con la cosa a cui tiene di più.', 'Niente. Pensa: cosa sistema ogni mattina allo specchio?'][Math.min(k, 2)]);
+  }
+}
+
+async function studioPhone() {
+  await say('Un telefono rosso, con un solo tasto. Sotto c\'è scritto: "Linea diretta".');
+  if (!await ask('Sollevi la cornetta?')) return;
+  Sound.sfx('alert');
+  const lines = [
+    ['DRIIIN... Pronto?', 'DOTT. BALDINAZZO: Ah, sei tu! Lo sapevo che l\'avresti trovato. Bello il mio ufficio, eh?', 'DOTT. BALDINAZZO: Non toccare la poltrona. Scherzo, siediti pure. Ma non dirlo al gatto.', 'DOTT. BALDINAZZO: Ora scusa, sono in riunione. Anzi, sono in tre riunioni. Ciao!'],
+    ['TUUU... TUUU...', 'Segreteria: "Ha chiamato il Dott. Baldinazzo. Sono impegnato a fare qualcosa di molto figo. Lasci un messaggio dopo il bip. Biiip."'],
+    ['DRIIIN... Dall\'altra parte qualcuno respira, poi una voce: "Il ping pong del -1 è libero alle 16:30. Passo e chiudo."']
+  ];
+  await sayAll(lines[Math.floor(Math.random() * lines.length)], { portrait: '#1c2440' });
 }
