@@ -1,192 +1,695 @@
 'use strict';
-// Mappe, personaggi e allenatori.
+// Mappe, personaggi, allenatori e indizi.
 const PAL = {
   player: { id: 'player', hair: '#5a3a22', shirt: '#f8f8f8', pants: '#384878', tie: '#d03030' },
-  ferri: { id: 'ferri', hair: '#a02818', shirt: '#a050a0', pants: '#383848', long: true, glasses: true },
+  ondina: { id: 'ondina', hair: '#c86030', shirt: '#4898a8', pants: '#383848', long: true, glasses: true },
+  cablaggi: { id: 'cablaggi', hair: '#808080', shirt: '#e08830', pants: '#384858' },
   kevin: { id: 'kevin', hair: '#e8c040', shirt: '#3888d0', pants: '#584838', spiky: true },
-  giulia: { id: 'giulia', hair: '#282828', shirt: '#e87878', pants: '#484858', long: true },
+  recept: { id: 'recept', hair: '#282828', shirt: '#e87878', pants: '#484858', long: true },
   guard: { id: 'guard', hair: '#404040', shirt: '#404868', pants: '#303038', tie: '#f8d030' },
-  luca: { id: 'luca', hair: '#c87838', shirt: '#f8e070', pants: '#486848' },
-  marta: { id: 'marta', hair: '#704020', shirt: '#58a058', pants: '#383848', long: true },
-  paolo: { id: 'paolo', hair: '#303030', shirt: '#b8c8e8', pants: '#505060', tie: '#3858a8' },
-  anna: { id: 'anna', hair: '#d07030', shirt: '#f0a040', pants: '#585868', long: true },
-  gianni: { id: 'gianni', hair: '#282828', shirt: '#585860', pants: '#383848', glasses: true },
-  sara: { id: 'sara', hair: '#d8a048', shirt: '#d05878', pants: '#383848', long: true },
-  ivo: { id: 'ivo', hair: '#683820', shirt: '#78b878', pants: '#485868' },
-  boss: { id: 'boss', hair: '#c8c8c8', shirt: '#f8f8f8', pants: '#282838', tie: '#d8b030', jacket: '#282838' },
-  segretaria: { id: 'segretaria', hair: '#583020', shirt: '#e8e8f0', pants: '#585868', long: true, glasses: true }
+  dev1: { id: 'dev1', hair: '#c87838', shirt: '#303038', pants: '#384868' },
+  dev2: { id: 'dev2', hair: '#202020', shirt: '#58a058', pants: '#383848', glasses: true },
+  po: { id: 'po', hair: '#d8a048', shirt: '#f0a040', pants: '#585868', long: true },
+  bi: { id: 'bi', hair: '#683820', shirt: '#7858b8', pants: '#383848', glasses: true },
+  techlead: { id: 'techlead', hair: '#383838', shirt: '#282830', pants: '#202028', glasses: true, spiky: true },
+  scrum: { id: 'scrum', hair: '#a02818', shirt: '#f8e070', pants: '#486848', long: true },
+  help1: { id: 'help1', hair: '#583020', shirt: '#3870c8', pants: '#383848', long: true },
+  help2: { id: 'help2', hair: '#202020', shirt: '#3870c8', pants: '#383848' },
+  tecnico: { id: 'tecnico', hair: '#906040', shirt: '#808890', pants: '#404858' },
+  sist: { id: 'sist', hair: '#303030', shirt: '#585860', pants: '#383848', glasses: true },
+  respit: { id: 'respit', hair: '#d0d0d0', shirt: '#284878', pants: '#202838', tie: '#d03030' },
+  neteng: { id: 'neteng', hair: '#202020', shirt: '#e8a020', pants: '#384858' },
+  magaz: { id: 'magaz', hair: '#683820', shirt: '#58a058', pants: '#4a3a28' },
+  corriere: { id: 'corriere', hair: '#c88040', shirt: '#d84040', pants: '#383838' },
+  netman: { id: 'netman', hair: '#484848', shirt: '#f8f8f8', pants: '#303848', jacket: '#3a4a3a' },
+  controller: { id: 'controller', hair: '#282828', shirt: '#f8f8f8', pants: '#282838', jacket: '#4a4a58', glasses: true },
+  tax: { id: 'tax', hair: '#a07040', shirt: '#e8d8b8', pants: '#383848', long: true },
+  legal: { id: 'legal', hair: '#181818', shirt: '#f8f8f8', pants: '#181820', jacket: '#202028', long: true },
+  cfo: { id: 'cfo', hair: '#909090', shirt: '#f8f8f8', pants: '#283048', jacket: '#283048', tie: '#58a058' },
+  segretaria: { id: 'segretaria', hair: '#583020', shirt: '#e8e8f0', pants: '#585868', long: true, glasses: true },
+  ad: { id: 'ad', hair: '#e0e0e0', shirt: '#f8f8f8', pants: '#18181c', tie: '#c02828', jacket: '#18181c' },
+  pp1: { id: 'pp1', hair: '#e8c040', shirt: '#e05050', pants: '#384868' },
+  pp2: { id: 'pp2', hair: '#383028', shirt: '#50a0e0', pants: '#383848', long: true },
+  cal1: { id: 'cal1', hair: '#202020', shirt: '#e8e8e8', pants: '#384868' },
+  cal2: { id: 'cal2', hair: '#a85830', shirt: '#58b058', pants: '#4a3a28' },
+  barista: { id: 'barista', hair: '#3a2a20', shirt: '#f8f8f8', pants: '#202020', tie: '#202020' },
+  rider: { id: 'rider', hair: '#202020', shirt: '#40c0b0', pants: '#303038' },
+  runner: { id: 'runner', hair: '#e8a040', shirt: '#f05080', pants: '#202028' },
+  turista: { id: 'turista', hair: '#e8d8a0', shirt: '#f8a048', pants: '#c8b890' },
+  influencer: { id: 'influencer', hair: '#f0c8e0', shirt: '#f8f8f8', pants: '#c070c0', long: true },
+  architetto: { id: 'architetto', hair: '#c0c0c0', shirt: '#202020', pants: '#202020', glasses: true },
+  operaio: { id: 'operaio', hair: '#f8d030', shirt: '#f08020', pants: '#3858a8' },
+  hipster: { id: 'hipster', hair: '#4a2a18', shirt: '#b84838', pants: '#3a4a6a' },
+  writer: { id: 'writer', hair: '#40c040', shirt: '#383838', pants: '#5a5a7a' },
+  passante: { id: 'passante', hair: '#704020', shirt: '#a0a0c8', pants: '#404050' },
+  nonna: { id: 'nonna', hair: '#e8e8e8', shirt: '#9858a8', pants: '#585868', long: true },
+  sales: { id: 'sales', hair: '#202020', shirt: '#f8f8f8', pants: '#283048', jacket: '#283048' },
+  salesrep: { id: 'salesrep', hair: '#c87838', shirt: '#f8f8f8', pants: '#384868', tie: '#3870c8' },
+  mkt: { id: 'mkt', hair: '#e85080', shirt: '#202020', pants: '#202020', long: true, glasses: true },
+  mktcopy: { id: 'mktcopy', hair: '#f8d030', shirt: '#f070a0', pants: '#384868' },
+  cc: { id: 'cc', hair: '#583020', shirt: '#48a8a8', pants: '#383848', long: true },
+  ccop: { id: 'ccop', hair: '#202020', shirt: '#48a8a8', pants: '#383848' },
+  recept2: { id: 'recept2', hair: '#d8a048', shirt: '#7858b8', pants: '#484858', long: true },
+  visitor: { id: 'visitor', hair: '#806040', shirt: '#c8c8a0', pants: '#585848' }
 };
 
-const RIVAL_PICK = { foglietto: 'mousino', tazzino: 'foglietto', mousino: 'tazzino' };
+const BALD_SUITS = ['#1c2440', '#1c2440', '#1c2440', '#3a3a44', '#5a1c28', '#1f3a2c', '#23408e', '#8c8c96', '#121216', '#6a5038', '#2c2c5c', '#4a2c5c'];
+function baldPal(suit) {
+  return { id: 'bald' + suit, hair: '#18161c', skin: '#f0c8a8', shirt: '#f8f8f8', pants: suit, jacket: suit, shoe: '#3a2418', quiff: true, watch: true };
+}
+
+// Indizi sull'ufficio segreto del Dott. Baldinazzo: ogni personaggio ne conosce uno.
+const HINTS = [
+  'Lo sai che il Dott. Baldinazzo ha un ufficio tutto suo? Nessuno l\'ha mai visto.',
+  'Dicono che l\'ufficio del Dott. Baldinazzo sia sotto i nostri piedi.',
+  'Una volta l\'ho visto scendere al -1 con un libro sotto il braccio. Non l\'ho più visto risalire.',
+  'Al -1, vicino ai distributori, si sente sempre profumo di libri vecchi. Strano, no?',
+  'Il Dott. Baldinazzo dice che le idee migliori arrivano dove passa l\'aria. Tipo le griglie di aerazione.',
+  'Ho notato una griglia di aerazione al -1. È l\'unica pulita di tutto il palazzo.',
+  'Dietro i distributori automatici del -1 c\'è uno spazio stretto. Ci passa giusto una persona.',
+  'Se ti infili tra i distributori e la pianta, al -1, e guardi in su... vedi una griglia.',
+  'La griglia sopra i distributori del -1 non è avvitata. Basta camminarci contro.',
+  'Il tecnico della manutenzione giura che dietro quella griglia c\'è un cunicolo. E che il cunicolo porta da qualche parte.',
+  'Nel cunicolo ci sono due strade. Una è più corta, l\'altra è più panoramica. Arrivano tutte e due alla stessa porta.',
+  'Il Dott. Baldinazzo ha tre monitor. Lo so perché il consumo elettrico del -1 è triplicato.',
+  'Ho chiesto al Dott. Baldinazzo dov\'è il suo ufficio. Mi ha risposto: "Dove nessuno ti cerca, ma tutti passano." Poi è scappato in riunione.',
+  'Nel suo ufficio c\'è una libreria enorme. Io l\'ho solo sentito dire, eh.',
+  'Il Dott. Baldinazzo lascia sempre un cartello "Torno subito" sulla sedia. Torna sempre dopo.',
+  'L\'ufficio segreto? Parti dall\'area break del -1. Poi segui il profumo di caffè e carta stampata.',
+  'Ho visto un\'ombra entrare nella griglia del -1. Aveva un ciuffo perfetto.',
+  'Le planimetrie ufficiali del -1 hanno una stanza in meno di quelle vere.',
+  'Al -1 c\'è una griglia vicino ai distributori. Non dire a nessuno che te l\'ho detto.',
+  'Il Dott. Baldinazzo dice che un buon project manager deve avere sempre una via d\'uscita. E un\'entrata segreta.',
+  'Chi gioca a ping pong al -1 sente ogni tanto dei passi dentro il muro, sopra i distributori.',
+  'La manutenzione ha provato a chiudere la griglia del -1. Il giorno dopo era di nuovo aperta. E c\'era un post-it con scritto "grazie".',
+  'Nel suo ufficio ci sono dashboard sempre accese. KPI in tempo reale, dicono. Anche di notte.',
+  'Una volta ho seguito il Dott. Baldinazzo per vedere dove andava. Al -1 è sparito tra i distributori.',
+  'Il segreto non è dove sta il suo ufficio. È come ci entri: cammina verso il muro, non lontano dal muro.',
+  'Si dice che i distributori del -1 nascondano qualcosa. Oltre alle merendine scadute.',
+  'Mio cugino del facility dice che il -1 ha una griglia "decorativa". Le griglie decorative non esistono.',
+  'Il Dott. Baldinazzo conosce tutti i passaggi segreti del palazzo. Ne ha scoperto uno anche lui, al -1.',
+  'Se trovi l\'ufficio del Dott. Baldinazzo, non toccare niente. A parte i libri: quelli puoi leggerli.',
+  'Ho sentito dire che il suo ufficio è "sotto il ping pong, dietro la merenda". Un indovinello da PM.',
+  'Ascolta un consiglio: al -1 controlla ogni muro vicino ai distributori. Uno non è un muro.',
+  'Il cunicolo segreto ha delle casse di legno. Una dice "Archivio 1998". Dentro ci sono solo SIM vecchissime.',
+  'Una griglia, un cunicolo, una porta. Tre passi per l\'ufficio più figo dell\'azienda. Mi hanno detto.',
+  'L\'ufficio del Dott. Baldinazzo ha una sedia da ufficio ergonomica. La più comoda d\'Italia, pare.',
+  'Ho visto il Dott. Baldinazzo uscire da una griglia con la giacca senza una piega. Come fa?',
+  'Al -1 la griglia di aerazione è sopra lo spazio vuoto tra i distributori e la pianta. Quello che nessuno guarda.',
+  'Dicono che chi trova l\'ufficio segreto riceva un premio. Io non l\'ho mai trovato, quindi non saprei.',
+  'Il wifi più veloce del palazzo è al -1, vicino ai distributori. Chissà perché.',
+  'Il Dott. Baldinazzo ha detto: "Il mio ufficio è come un buon KPI: se lo cerchi bene, lo trovi."',
+  'Dal -1 si sente ogni tanto un applauso. Viene da dietro il muro. Forse il Dott. Baldinazzo si complimenta con le sue dashboard.',
+  'In sede staccata nessuno sa dell\'ufficio segreto. Ma tutti sanno che il -1 della sede principale è "strano".',
+  'Le leggende dell\'ufficio dicono: "Scendi al -1, passa tra i distributori, sali nella griglia."',
+  'Se un giorno trovi un cartello "Torno subito", sei arrivato nel posto giusto.',
+  'Il Dott. Baldinazzo non ha mai detto dov\'è il suo ufficio. Ma ha detto che il -1 è "il piano più sottovalutato".',
+  'Ti do un indizio gratis: area break, distributori, griglia. Il resto è avventura.'
+];
 
 const TRAINERS = {
-  rival1: { title: 'KEVIN', pal: PAL.kevin, money: 100, lose: 'Cosa?! Ho scelto la cartellina sbagliata!',
+  rival1: { title: 'KEVIN', pal: PAL.kevin, money: 100, lose: 'Ma come?! Ho scelto la cartellina con il vantaggio!',
     team: () => [[RIVAL_PICK[game.flags.starter], 5]] },
-  luca: { title: 'STAGISTA LUCA', pal: PAL.luca, money: 120, sight: 4,
-    intro: ['Ehi! Sono stagista da tre mesi e non ho mai perso una lotta!', 'Beh, non ho mai lottato. Ma c\'è sempre una prima volta!'],
-    lose: 'Lo scrivo nel report: "esperienza formativa".',
-    after: 'Fra due settimane scade il mio stage. Speriamo nel rinnovo...',
-    team: [['graffetta', 4], ['postit', 5]] },
-  marta: { title: 'CONTABILE MARTA', pal: PAL.marta, money: 200, sight: 3,
-    intro: ['Alt! Hai consegnato la nota spese?', 'No? Allora lottiamo. I conti devono tornare!'],
-    lose: 'Il bilancio è in rosso... come la mia faccia.',
-    after: 'Il Direttore controlla ogni centesimo. Preparati bene prima di salire.',
-    team: [['faldone', 6]] },
-  gianni: { title: 'TECNICO IT GIANNI', pal: PAL.gianni, money: 260, sight: 3,
-    intro: ['Hai provato a spegnere e riaccendere?', 'No? Allora ti riavvio io!'],
-    lose: 'Errore 404: vittoria non trovata.',
-    after: 'Ti consiglio un Officemon di tipo CAFFÈ contro la TECH. Mandano tutto in corto circuito.',
-    team: [['cavetto', 8], ['stampacchio', 9]] },
-  sara: { title: 'PROJECT MANAGER SARA', pal: PAL.sara, money: 300, sight: 2,
-    intro: ['Ho cinque minuti tra una call e l\'altra.', 'Facciamo una lotta veloce. Agile!'],
-    lose: 'Va bene, sposto la vittoria al prossimo sprint.',
-    after: 'Il Direttore usa una POLTRONISSIMA. È di tipo UFFICIO: nessun tipo ha vantaggio su di lei.',
-    team: [['pinzatrice', 9], ['moka', 10]] },
-  rival2: { title: 'KEVIN', pal: PAL.kevin, money: 500, sight: 3,
-    intro: ['Eccoti finalmente! Anch\'io voglio la promozione.', 'Prima di vedere il Direttore dovrai passare sopra di me!'],
-    lose: 'Va bene, hai vinto tu. Il Direttore è tutto tuo. In bocca al lupo!',
-    after: 'Il Direttore è dietro quella porta. Io resto qui a... riorganizzare la scrivania.',
-    team: () => [['pinzatrice', 10], ['moka', 11], [RIVAL_PICK[game.flags.starter], 13]] },
-  boss: { title: 'IL DIRETTORE', pal: PAL.boss, money: 2000,
-    lose: 'Impressionante. Davvero impressionante.',
-    team: [['espressone', 12], ['faldone', 13], ['poltronissima', 14]] },
-  bossRematch: { title: 'IL DIRETTORE', pal: PAL.boss, money: 3000,
-    lose: 'Revisione superata a pieni voti.',
-    team: [['espressone', 20], ['stampacchio', 20], ['faldone', 21], ['poltronissima', 23]] }
+  rival2: { title: 'KEVIN', pal: PAL.kevin, money: 300, sight: 3,
+    intro: ['Eccoti! Sono già al primo piano, io. Ho fatto il deploy in produzione di venerdì sera.', 'Vediamo se il tuo Officemon regge il mio carico!'],
+    lose: 'Rollback! Rollback immediato!',
+    after: 'Il TECH LEAD è nella sala riunioni a vetri. Io aspetto qui che finisca la build. Da tre ore.',
+    team: () => [['graffetta', 8], [RIVAL_PICK[game.flags.starter], 10]] },
+  rival3: { title: 'KEVIN', pal: PAL.kevin, money: 800, sight: 4,
+    intro: ['Anche tu diretto alla sede staccata? Ci sto andando da ieri mattina.', 'Il tram 33 è soppresso, la metro è chiusa, il navigatore mi manda in un cantiere. Sfogo la frustrazione su di te!'],
+    lose: 'Va bene, va bene. Almeno sai la strada? Io no.',
+    after: 'La sede staccata è in fondo a destra, oltre il cantiere. Dicono. Nessuno ci è mai arrivato in meno di un\'ora.',
+    team: () => [['pinzatrice', 19], ['ripetitore', 20], [RIVAL_PICK[game.flags.starter], 22]] },
+  rival4: { title: 'KEVIN', pal: PAL.kevin, money: 1500, sight: 3,
+    intro: ['Siamo arrivati in fondo, eh? Il quarto piano. L\'AD ci aspetta.', 'Ma solo uno di noi entrerà da quella porta. Ultima lotta tra colleghi!'],
+    lose: 'Hai vinto tu. Davvero. Entra e fai vedere chi sei. Io intanto aggiorno il CV.',
+    after: 'Sei il collega più forte che abbia mai conosciuto. Non dirlo a nessuno che te l\'ho detto.',
+    team: () => [['pinzatrice', 27], ['ripetitore', 27], ['moka', 27], [RIVAL_PICK[game.flags.starter], 29]] },
+  techlead: { title: 'TECH LEAD STACK', pal: PAL.techlead, money: 600, sight: 0,
+    intro: ['Ciao. Sono il TECH LEAD. Ho cinque minuti tra una code review e l\'altra.', 'Se vuoi accedere al secondo piano, devi superare la mia pull request. Niente commenti, solo test.'],
+    lose: 'Approvata. LGTM. Il badge per il secondo piano è abilitato.',
+    after: 'Al secondo piano c\'è l\'assistenza IT. Se hai un problema col PC, porta pazienza. E un caffè.',
+    team: [['cavetto', 9], ['switchone', 10], ['mousino', 11]] },
+  respit: { title: 'RESPONSABILE IT SLA', pal: PAL.respit, money: 900, sight: 0,
+    intro: ['Il tuo ticket è stato preso in carico. Tempo stimato di risoluzione: una lotta.', 'SLA a quattro ore, ma per te faccio un\'eccezione. Iniziamo subito.'],
+    lose: 'Ticket chiuso con risoluzione positiva. Il badge per il terzo piano è abilitato.',
+    after: 'Al terzo piano ci sono quelli della rete. Parlano solo per acronimi. BTS, POP, FTTH... Auguri.',
+    team: [['smartfonino', 13], ['stampacchio', 14], ['ripetitore', 15]] },
+  netman: { title: 'NETWORK MANAGER BACKBONE', pal: PAL.netman, money: 1300, sight: 0,
+    intro: ['Latenza zero, ridondanza totale. Questa è la mia rete.', 'Vediamo se riesci a superare il mio core network!'],
+    lose: 'Uptime interrotto. Non mi succedeva dal 2019.',
+    after: 'La sede staccata è lontana, ma la strada c\'è. Più o meno.',
+    team: [['antennina', 17], ['switchone', 17], ['rackone', 19]] },
+  ad: { title: "L'AMMINISTRATORE DELEGATO", pal: PAL.ad, money: 5000,
+    lose: 'Straordinario. Il piano industriale lo scrivi tu, l\'anno prossimo.',
+    team: [['espressone', 29], ['rackone', 29], ['faldone', 29], ['antennina', 30], ['poltronissima', 32]] },
+  adRematch: { title: "L'AMMINISTRATORE DELEGATO", pal: PAL.ad, money: 8000,
+    lose: 'Revisione di budget superata. Ancora una volta.',
+    team: [['espressone', 40], ['rackone', 41], ['switchone', 41], ['bolletta', 41], ['antennina', 42], ['poltronissima', 45]] },
+  sales: { title: 'DIRETTRICE SALES QUOTA', pal: PAL.sales, money: 1600,
+    lose: 'Target superato. Firmo il via libera, te lo sei meritato.',
+    team: [['bolletta', 25], ['antennina', 25], ['switchone', 26]] },
+  mkt: { title: 'HEAD OF MARKETING BRAND', pal: PAL.mkt, money: 1200,
+    lose: 'Che engagement! Questa lotta diventa subito un caso di studio.',
+    team: [['ripetitore', 23], ['foglietto', 23], ['smartfonino', 24]] },
+  cc: { title: 'HEAD OF CUSTOMER CARE NPS', pal: PAL.cc, money: 1200,
+    lose: 'NPS altissimo. La sua lotta è importante per noi.',
+    team: [['cuffietta', 24], ['antennina', 24], ['bolletta', 25]] }
 };
 
+const FLOORS = [
+  { id: 'pm1', label: '-1  AREA BREAK', open: () => !!game.flags.kit },
+  { id: 'pt', label: 'PT  RECEPTION', open: () => true },
+  { id: 'p1', label: '1   SOFTWARE FACTORY', open: () => !!game.flags.kit },
+  { id: 'p2', label: '2   ASSISTENZA IT', open: () => !!game.flags.def_techlead },
+  { id: 'p3', label: '3   RETE E LOGISTICA', open: () => !!game.flags.def_respit },
+  { id: 'p4', label: '4   DIREZIONE', open: () => !!game.flags.badge4 },
+  { id: 'p5', label: '5   HR E FACILITY', open: () => true }
+];
+
+const T = (title, pal, team, money, sight, intro, lose, after) => ({ title, pal, team, money, sight, intro, lose, after });
+
 const MAPS = {
-  hall: {
-    name: 'RECEPTION',
-    tiles: [
-      '####################',
-      '##W###O####W###E##W#',
-      '#P........,,......P#',
-      '#.........,,.......#',
-      '#..RRRRR..,,..ww...#',
-      '#.........,,.......#',
-      '#.hhh.....,,..BBBB.#',
-      '#.........,,.......#',
-      '#P........,,......P#',
-      '##########MM########'
-    ],
-    warps: { '6,1': ['hr', 5, 7, 'up'], '15,1': ['open', 1, 2, 'down'] },
-    npcs: [
-      { id: 'giulia', x: 5, y: 3, dir: 'down', pal: PAL.giulia, talk: async () => {
-        if (!game.flags.starter) await sayAll([`GIULIA: Buongiorno! Tu devi essere ${game.name}, il nuovo assunto.`, 'GIULIA: La Dott.ssa FERRI delle Risorse Umane ti aspetta. La porta è in alto a sinistra.']);
-        else if (!game.flags.champion) await sayAll(['GIULIA: Al primo piano c\'è la macchinetta del caffè. Usala per rimettere in forma la squadra.', 'GIULIA: E ricordati di salvare spesso dal menu START!']);
-        else await say(`GIULIA: Capo reparto ${game.name}! Le preparo un caffè?`);
-      } },
-      { id: 'guard', x: 15, y: 2, dir: 'down', pal: PAL.guard, show: () => !game.flags.starter,
-        text: ['BRUNO: Alt! Ai piani superiori si lavora con gli Officemon.', 'BRUNO: Passa prima dall\'ufficio delle Risorse Umane, è la porta in alto a sinistra.'] },
-      { id: 'guard2', x: 17, y: 2, dir: 'left', pal: PAL.guard, show: () => !!game.flags.starter,
-        text: ['BRUNO: L\'ascensore porta all\'open space del primo piano. Buon lavoro!'] }
-    ],
-    signs: {
-      '10,9': ['È il tuo primo giorno: non puoi già tornartene a casa!'],
-      '11,9': ['È il tuo primo giorno: non puoi già tornartene a casa!']
-    }
-  },
-  hr: {
-    name: 'UFFICIO HR',
-    tiles: [
-      '############',
-      '#b#b##W##b##',
-      '#..........#',
-      '#...DDDD...#',
-      '#..........#',
-      '#..T.T.T...#',
-      '#..........#',
-      '#P........P#',
-      '#####oo#####'
-    ],
-    warps: { '5,8': ['hall', 6, 2, 'down'], '6,8': ['hall', 6, 2, 'down'] },
-    npcs: [
-      { id: 'ferri', x: 5, y: 2, dir: 'down', pal: PAL.ferri, talk: () => ferriTalk() },
-      { id: 'kevin', x: 9, y: 5, dir: 'left', pal: PAL.kevin, show: () => !game.flags.rival1,
-        text: ['KEVIN: Ciao! Anch\'io sono nuovo. Mi chiamo KEVIN.', 'KEVIN: Pare che oggi ci assegnino il nostro primo Officemon. Che emozione!'] },
-      { id: 'f_foglietto', kind: 'folder', color: '#58a848', sp: 'foglietto', x: 3, y: 5, show: () => !game.flags.taken_foglietto, talk: n => folderTalk(n) },
-      { id: 'f_tazzino', kind: 'folder', color: '#b06830', sp: 'tazzino', x: 5, y: 5, show: () => !game.flags.taken_tazzino, talk: n => folderTalk(n) },
-      { id: 'f_mousino', kind: 'folder', color: '#4878d8', sp: 'mousino', x: 7, y: 5, show: () => !game.flags.taken_mousino, talk: n => folderTalk(n) }
-    ]
-  },
-  open: {
-    name: 'OPEN SPACE - 1° PIANO',
-    tiles: [
-      '########################',
-      '#E##W###W###W###W###W#S#',
-      '#......................#',
-      '#.DCD.DCD....gggggg....#',
-      '#....................K.#',
-      '#.DCD.DCD....gggggg..v.#',
-      '#.............gggg.....#',
-      '#P....................P#',
-      '#gggg....BBBB....,,,,,,#',
-      '#gggg............,,TT,,#',
-      '#gggg....DCD.DCD.,,,,,,#',
-      '#.....................P#',
-      '########################'
-    ],
-    warps: { '1,1': ['hall', 15, 2, 'down'], '22,1': ['piano2', 1, 2, 'down'] },
-    encounters: [['graffetta', 2, 4, 40], ['postit', 2, 4, 40], ['moka', 3, 4, 20]],
-    npcs: [
-      { id: 'paolo', x: 3, y: 4, dir: 'down', pal: PAL.paolo, wander: true,
-        text: ['PAOLO: Vedi quei grovigli di cavi? Lì dentro vivono gli Officemon selvatici.', 'PAOLO: Indeboliscili in lotta e poi proponi un CONTRATTO dallo ZAINO!'] },
-      { id: 'anna', x: 21, y: 9, dir: 'left', pal: PAL.anna, wander: true,
-        text: ['ANNA: La macchinetta del caffè qui accanto rimette in forma tutta la squadra. Gratis!', 'ANNA: Il distributore invece vende strumenti utili, se hai buoni pasto.'] },
-      { id: 'luca', x: 10, y: 6, dir: 'left', pal: PAL.luca, trainer: TRAINERS.luca },
-      { id: 'marta', x: 17, y: 2, dir: 'down', pal: PAL.marta, trainer: TRAINERS.marta },
-      { id: 'item_open1', kind: 'item', x: 1, y: 11, item: 'contratto', qty: 2 },
-      { id: 'item_open2', kind: 'item', x: 21, y: 11, item: 'caffe', qty: 2 }
-    ]
-  },
-  piano2: {
-    name: 'REPARTO IT - 2° PIANO',
+  pt: {
+    name: 'RECEPTION - PIANO TERRA', lift: [10, 2],
     tiles: [
       '######################',
-      '#S###W####W#####O##W##',
-      '#....................#',
-      '#.gggggg.....DCD.DCD.#',
-      '#.gggggg.............#',
-      '#.QQQQQQ....K........#',
-      '#.gggggg.....DCD.DCD.#',
-      '#.gggggg.............#',
-      '#.QQQQQQ.......BBBB..#',
-      '#.gggggg.............#',
-      '#P..................P#',
-      '######################'
+      '##W###W###E###W###W###',
+      '#P.......,,,,.......P#',
+      '#........,,,,........#',
+      '#..RRRRR.,,,,..ww....#',
+      '#........,,,,........#',
+      '#.hhh....,,,,...BBBB.#',
+      '#........,,,,........#',
+      '#.h......,,,,......h.#',
+      '#P.......,,,,.......P#',
+      '#########oooo#########'
     ],
-    warps: { '1,1': ['open', 22, 2, 'down'], '16,1': ['boss', 6, 8, 'up'] },
-    encounters: [['cavetto', 6, 8, 35], ['stampacchio', 7, 8, 25], ['moka', 6, 8, 15], ['faldone', 7, 9, 10], ['pinzatrice', 7, 8, 15]],
+    warps: {
+      '9,10': ['via', 12, 5, 'down', 'exitHQ'], '10,10': ['via', 12, 5, 'down', 'exitHQ'],
+      '11,10': ['via', 13, 5, 'down', 'exitHQ'], '12,10': ['via', 13, 5, 'down', 'exitHQ']
+    },
     npcs: [
-      { id: 'ivo', x: 1, y: 9, dir: 'right', pal: PAL.ivo,
-        text: ['IVO: Tra i rack dei server i cavi sono vivi. Letteralmente.', 'IVO: Qui gli Officemon sono più forti. Fai scorta di CAFFÈ!'] },
-      { id: 'gianni', x: 9, y: 7, dir: 'left', pal: PAL.gianni, trainer: TRAINERS.gianni },
-      { id: 'sara', x: 13, y: 9, dir: 'up', pal: PAL.sara, trainer: TRAINERS.sara },
-      { id: 'kevin2', x: 14, y: 2, dir: 'right', pal: PAL.kevin, trainer: TRAINERS.rival2 },
-      { id: 'item_p2', kind: 'item', x: 20, y: 9, item: 'espresso', qty: 1 },
-      { id: 'item_p2b', kind: 'item', x: 8, y: 9, item: 'cornetto', qty: 1 }
+      { id: 'recept', x: 5, y: 3, dir: 'down', pal: PAL.recept, hint: 0, talk: () => receptTalk() },
+      { id: 'guard', x: 8, y: 9, dir: 'right', pal: PAL.guard, hint: 1,
+        text: () => game.flags.dossier ? ['VIGILANZA BADGE: Hai il dossier per la sede staccata? Allora vai pure. Porta un ombrello, una borraccia e tanta pazienza.'] : ['VIGILANZA BADGE: Da qui si esce verso la città. Ma tu oggi resti in sede: sei appena arrivato!'] },
+      { id: 'visitor', x: 3, y: 7, dir: 'up', pal: PAL.visitor, hint: 2,
+        text: ['CANDIDATO: Sono qui per un colloquio. Mi hanno detto di aspettare "cinque minuti". Era martedì.'] },
+      { id: 'corriere0', x: 15, y: 8, dir: 'left', pal: PAL.corriere, hint: 3, wander: true,
+        text: ['CORRIERE: Ho un pacco per l\'ufficio Logistica B2B. Terzo piano. Ma l\'ascensore non mi riconosce il badge.'] }
     ]
   },
-  boss: {
-    name: 'UFFICIO DEL DIRETTORE',
+  pm1: {
+    name: '-1 - AREA BREAK', lift: [8, 2],
+    tiles: [
+      '########################',
+      '#N##N###E#######V###N###',
+      '#h.......P....vv.P....K#',
+      '#h.....................#',
+      '#......................#',
+      '#.........,,,,,,,,,,,..#',
+      '#.........,,T,,T,,T,,..#',
+      '#.........,,,,,,,,,,,..#',
+      '#......................#',
+      '#P.hhh..........hhh...P#',
+      '########################'
+    ],
+    decor: [{ k: 'pingpong', x: 2, y: 5, w: 3, h: 2 }, { k: 'calcetto', x: 6, y: 7, w: 3, h: 2 }],
+    warps: { '16,1': ['cunicolo', 6, 9, 'up'] },
+    baldSlots: { pingpong: [5, 5, 'left', 'pp2'], calcetto: [7, 9, 'up', 'cal2'] },
+    npcs: [
+      { id: 'pp1', x: 1, y: 5, dir: 'right', pal: PAL.pp1, hint: 20, anim: 'pp',
+        text: ['GIOCATRICE DI PING PONG: Non distrarmi! Siamo 20 pari, ai vantaggi, da quaranta minuti.'] },
+      { id: 'pp2', x: 5, y: 5, dir: 'left', pal: PAL.pp2, hint: 29, anim: 'pp',
+        text: ['GIOCATORE DI PING PONG: Questo è il mio "smart working". Il tavolo è smart, io lavoro.'] },
+      { id: 'cal1', x: 7, y: 6, dir: 'down', pal: PAL.cal1, hint: 25, anim: 'cal',
+        text: ['GIOCATORE DI CALCIO BALILLA: Niente rullate! Le regole del -1 sono più severe di quelle della compliance.'] },
+      { id: 'cal2', x: 7, y: 9, dir: 'up', pal: PAL.cal2, hint: 30, anim: 'cal',
+        text: ['GIOCATRICE DI CALCIO BALILLA: Gioco in difesa. Come il reparto Legal.'] },
+      { id: 'pausa1', x: 13, y: 4, dir: 'down', pal: PAL.scrum, hint: 3, wander: true,
+        text: ['COLLEGA IN PAUSA: Il -1 è il piano più produttivo del palazzo. Qui nascono le idee. E le partite a ping pong.'] },
+      { id: 'pausa2', x: 20, y: 7, dir: 'left', pal: PAL.help1, hint: 37,
+        text: ['COLLEGA AL DISTRIBUTORE: La macchinetta del caffè qui è la più buona del palazzo. Ti rimette in forma tutta la squadra.'] }
+    ]
+  },
+  cunicolo: {
+    name: '???', dark: true,
+    tiles: [
+      '################',
+      '#######O########',
+      '#######d########',
+      '##ddddddd#######',
+      '##d#####d###ddd#',
+      '##d#c###ddddd#d#',
+      '##ddd#########d#',
+      '####d#ddddddddd#',
+      '####d#d#########',
+      '####ddd#########',
+      '######o#########'
+    ],
+    warps: { '6,10': ['pm1', 16, 2, 'down'], '7,1': ['studio', 6, 7, 'up'] },
+    signs: { '4,5': ['Una vecchia cassa di legno. C\'è scritto "ARCHIVIO 1998". Dentro ci sono decine di SIM formato maxi, quelle grandi come una carta di credito.'] },
+    npcs: []
+  },
+  studio: {
+    name: 'UFFICIO DEL DOTT. BALDINAZZO',
+    tiles: [
+      '##############',
+      '#LLLLLLLLLLLL#',
+      '#LLLLLLLLLLLL#',
+      '#LppppppppppL#',
+      '#LppppppppppL#',
+      '#LppppppppppL#',
+      '#PppppppppppP#',
+      '#pppppppppppp#',
+      '######oo######'
+    ],
+    decor: [{ k: 'desk3', x: 5, y: 4, w: 3, h: 1 }, { k: 'chair', x: 6, y: 3, w: 1, h: 1 }, { k: 'sign', x: 8, y: 3, w: 1, h: 1 }],
+    warps: { '6,8': ['cunicolo', 7, 2, 'down'], '7,8': ['cunicolo', 7, 2, 'down'] },
+    npcs: []
+  },
+  p5: {
+    name: '5° PIANO - HR E FACILITY', lift: [12, 2],
+    tiles: [
+      '##########################',
+      '#b##W##W#b##E##b##W##W##b#',
+      '#.........#...#..........#',
+      '#..DDDD...#...#...BBBB...#',
+      '#.........#...#..........#',
+      '#.T.T.T..................#',
+      '#.........#...#..........#',
+      '#P.......P#...#P........P#',
+      '##########################'
+    ],
+    npcs: [
+      { id: 'ondina', x: 4, y: 2, dir: 'down', pal: PAL.ondina, hint: 4, talk: () => hrTalk() },
+      { id: 'kevin', x: 8, y: 5, dir: 'left', pal: PAL.kevin, show: () => !game.flags.rival1,
+        text: ['KEVIN: Ciao! Anch\'io sono nuovo. Mi chiamo KEVIN.', 'KEVIN: Pare che oggi ci assegnino il nostro primo Officemon. Spero in uno con il 5G.'] },
+      { id: 'f_simmetta', kind: 'folder', color: '#d09818', sp: 'simmetta', x: 2, y: 5, show: () => !game.flags.taken_simmetta, talk: n => folderTalk(n) },
+      { id: 'f_simbox', kind: 'folder', color: '#58a848', sp: 'simbox', x: 4, y: 5, show: () => !game.flags.taken_simbox, talk: n => folderTalk(n) },
+      { id: 'f_routerino', kind: 'folder', color: '#3888d0', sp: 'routerino', x: 6, y: 5, show: () => !game.flags.taken_routerino, talk: n => folderTalk(n) },
+      { id: 'cablaggi', x: 20, y: 4, dir: 'down', pal: PAL.cablaggi, hint: 5, talk: () => facilityTalk() },
+      { id: 'facil2', x: 16, y: 2, dir: 'down', pal: PAL.magaz, hint: 26, wander: true,
+        text: ['ADDETTA FACILITY: Qui gestiamo sedi, badge, scrivanie, sedie e lampadine. Se qualcosa si rompe, è colpa nostra. Se funziona, è merito tuo.'] }
+    ]
+  },
+  p1: {
+    name: '1° PIANO - SOFTWARE FACTORY', lift: [13, 2],
+    tiles: [
+      '############################',
+      '#Z##Z##W###Z#E#Z###W#N##N#N#',
+      '#.........................K#',
+      '#.CDC.CDC...,,,,,,,...LL.L.#',
+      '#gggggggg...,,TTT,,...C.C..#',
+      '#gggggggg...,,,,,,,........#',
+      '#.CDC.CDC...,,TTT,,...C.C..#',
+      '#gggggggg...,,,,,,,........#',
+      '#gggggggg.........UUUUU.UUU#',
+      '#.CDC.CDC.........U.......U#',
+      '#P.......P........U..DDD..U#',
+      '#.........,,,,,,,.U.......U#',
+      '############################'
+    ],
+    encounters: [['graffetta', 3, 5, 25], ['postit', 3, 5, 25], ['mousino', 4, 6, 20], ['tazzino', 4, 6, 15], ['cavetto', 5, 6, 15]],
+    npcs: [
+      { id: 'dev1', x: 10, y: 4, dir: 'left', pal: PAL.dev1, hint: 6,
+        trainer: T('DEV JUNIOR BUGGY', PAL.dev1, [['graffetta', 5], ['mousino', 6]], 150, 2,
+          ['Ehi! Ho appena scritto il mio primo hotfix. Testiamolo su di te!'], 'Funzionava sul mio PC, giuro!', 'Ho scoperto che il bug era un punto e virgola. Dopo sei ore.') },
+      { id: 'po', x: 17, y: 5, dir: 'left', pal: PAL.po, hint: 7,
+        trainer: T('PRODUCT OWNER AGILINA', PAL.po, [['postit', 6], ['foglietto', 7]], 200, 3,
+          ['Questa lotta è nel backlog. Priorità alta. La facciamo in questo sprint!'], 'Ok, la sposto nella retrospettiva.', 'Ogni user story deve avere un valore. La tua storia ne ha parecchio.') },
+      { id: 'bi', x: 24, y: 5, dir: 'left', pal: PAL.bi, hint: 8,
+        trainer: T('ANALISTA BI PIVOT', PAL.bi, [['stampacchio', 7], ['foglietto', 7]], 220, 3,
+          ['I dati dicono che perderai. Al 73,4%. Intervallo di confidenza al 95%.'], 'Devo rivedere il modello. Mancava una variabile: tu.', 'Nel data lake abbiamo tutto. Tranne la voglia di pulire i dati.') },
+      { id: 'dev2', x: 5, y: 10, dir: 'up', pal: PAL.dev2, hint: 9,
+        trainer: T('DEV SENIOR REFACTOR', PAL.dev2, [['cavetto', 7], ['mousino', 8]], 260, 2,
+          ['Questo codice l\'ho scritto io nel 2014. Non toccarlo.'], 'Va bene, faccio un refactoring di me stesso.', 'Il segreto è il caffè. E i test. Ma soprattutto il caffè.') },
+      { id: 'scrum', x: 19, y: 2, dir: 'down', pal: PAL.scrum, hint: 10, wander: true,
+        text: ['SCRUM MASTER: Lo stand-up dura quindici minuti. Quello di oggi è iniziato ieri.', 'SCRUM MASTER: Il TECH LEAD sta nella sala a vetri in fondo a destra. Battilo e il badge si abilita per il secondo piano.'] },
+      { id: 'kevin2', x: 23, y: 7, dir: 'left', pal: PAL.kevin, trainer: TRAINERS.rival2 },
+      { id: 'techlead', x: 22, y: 9, dir: 'down', pal: PAL.techlead, trainer: TRAINERS.techlead }
+    ]
+  },
+  p2: {
+    name: '2° PIANO - ASSISTENZA IT', lift: [10, 2],
+    tiles: [
+      '##########################',
+      '#W##Z##W##E##W##b##b##W###',
+      '#........................#',
+      '#.RRRRRR.....xx....BBBBB.#',
+      '#........................#',
+      '#.ggggg.ggggg.....CDC.CDC#',
+      '#.ggggg.ggggg............#',
+      '#.ggggg.ggggg.....CDC.CDC#',
+      '#........................#',
+      '#P..TTT.......K.......hhP#',
+      '##########################'
+    ],
+    encounters: [['smartfonino', 8, 10, 25], ['cuffietta', 8, 10, 25], ['stampacchio', 9, 11, 20], ['mousino', 8, 10, 15], ['moka', 9, 10, 15]],
+    npcs: [
+      { id: 'help1', x: 3, y: 2, dir: 'down', pal: PAL.help1, hint: 11,
+        trainer: T('OPERATRICE HELPDESK TICKET', PAL.help1, [['cuffietta', 11], ['smartfonino', 11]], 300, 0,
+          ['Assistenza IT, buongiorno! Ha provato a spegnere e riaccendere?', 'No? Allora la riavvio io!'], 'Ticket risolto. Mi lasci un feedback a cinque stelle?', 'Il novanta per cento dei problemi si risolve riavviando. Il restante dieci per cento riavviando due volte.') },
+      { id: 'help2', x: 6, y: 2, dir: 'down', pal: PAL.help2, hint: 12,
+        trainer: T('OPERATORE HELPDESK SLA', PAL.help2, [['smartfonino', 12]], 300, 0,
+          ['Il suo problema è stato inoltrato al secondo livello. Il secondo livello sono io. Lottiamo.'], 'Escalation fallita.', 'Il terzo livello esiste. Nessuno l\'ha mai visto, come il Dott. Baldinazzo quando lo cerchi.') },
+      { id: 'tecnico', x: 7, y: 8, dir: 'up', pal: PAL.tecnico, hint: 13,
+        trainer: T('TECNICO RIPARO', PAL.tecnico, [['stampacchio', 12], ['mousino', 12]], 320, 3,
+          ['Ho appena sostituito il toner. Ho le mani nere e la pazienza finita.'], 'Ok, il pezzo di ricambio sei tu.', 'Le stampanti sentono la paura. Mai mostrarsi agitati davanti a una stampante.') },
+      { id: 'sist', x: 16, y: 6, dir: 'left', pal: PAL.sist, hint: 14,
+        trainer: T('SISTEMISTA PATCH', PAL.sist, [['switchone', 13]], 340, 2,
+          ['Sto installando le patch di sicurezza. Ci vorrà un riavvio. Anzi, una lotta.'], 'Patch applicata con successo. Su di me.', 'La password più usata in azienda è ancora "Password1". Cambiala, ti prego.') },
+      { id: 'respit', x: 24, y: 4, dir: 'left', pal: PAL.respit, trainer: TRAINERS.respit },
+      { id: 'utente', x: 21, y: 9, dir: 'left', pal: PAL.visitor, hint: 15,
+        text: ['UTENTE IN ATTESA: Ho aperto un ticket perché il mouse non funziona. Era girato al contrario. Ora aspetto per la vergogna.'] }
+    ]
+  },
+  p3: {
+    name: '3° PIANO - RETE E LOGISTICA B2B', lift: [4, 2],
+    tiles: [
+      '############################',
+      '#W##E###W###b###W###b###W###',
+      '#..........................#',
+      '#.QQQQ.QQQQ.....BBBB.BBBB..#',
+      '#.gggg.gggg................#',
+      '#.gggg.gggg.....cc.cc.cc...#',
+      '#.QQQQ.QQQQ................#',
+      '#.gggg.gggg.....BBBB.BBBB..#',
+      '#.gggg.gggg................#',
+      '#.QQQQ.QQQQ.....cc.cc.cc...#',
+      '#P.........K.........DDD..P#',
+      '############################'
+    ],
+    encounters: [['switchone', 12, 14, 25], ['cavetto', 11, 13, 20], ['antennina', 12, 14, 20], ['ripetitore', 12, 14, 25], ['rackone', 14, 15, 5], ['faldone', 12, 13, 5]],
+    npcs: [
+      { id: 'neteng', x: 6, y: 2, dir: 'down', pal: PAL.neteng, hint: 16,
+        trainer: T('INGEGNERE DI RETE BACKHAUL', PAL.neteng, [['antennina', 15], ['cavetto', 15]], 400, 4,
+          ['Il backhaul è saturo, il jitter è alle stelle e tu sei nel mio corridoio.'], 'Pacchetto perso. Anzi, partita persa.', 'La FIBRA batte il SEGNALE, il SEGNALE batte la CARTA e la CARTA batte la FIBRA. Senza permessi niente scavi.') },
+      { id: 'magaz', x: 21, y: 6, dir: 'up', pal: PAL.magaz, hint: 17,
+        trainer: T('MAGAZZINIERE PALLET', PAL.magaz, [['faldone', 15], ['pinzatrice', 16]], 420, 3,
+          ['Questi pacchi vanno spediti ai clienti B2B entro stasera. Togliti di mezzo o lotta!'], 'Bolla di consegna firmata. Hai vinto tu.', 'In magazzino abbiamo diecimila modem tondi. Li contiamo ogni mattina. Sono sempre diecimila e uno.') },
+      { id: 'corriere', x: 14, y: 8, dir: 'right', pal: PAL.corriere, hint: 18,
+        trainer: T('ACCOUNT LOGISTICA B2B CONSEGNA', PAL.corriere, [['bolletta', 16], ['switchone', 16]], 440, 3,
+          ['Il cliente business vuole la consegna ieri. Tu mi rallenti. Lottiamo!'], 'Spedizione in ritardo. Come sempre.', 'Il B2B è come il B2C, ma con più riunioni.') },
+      { id: 'netman', x: 25, y: 9, dir: 'left', pal: PAL.netman, trainer: TRAINERS.netman }
+    ]
+  },
+  p4: {
+    name: '4° PIANO - DIREZIONE', lift: [10, 2],
+    tiles: [
+      '##########################',
+      '#W##W##b##E##b##W##O##W###',
+      '#........................#',
+      '#.CDC..CDC...UUUU.UUUU...#',
+      '#........................#',
+      '#.CDC..CDC...,,,,,,,,,,..#',
+      '#.............,,TTTT,,...#',
+      '#.CDC..CDC...,,,,,,,,,,..#',
+      '#........................#',
+      '#P.........K...........P.#',
+      '##########################'
+    ],
+    warps: { '19,1': ['ad', 6, 7, 'up', 'adDoor'] },
+    npcs: [
+      { id: 'controller', x: 5, y: 4, dir: 'down', pal: PAL.controller, hint: 19,
+        trainer: T('CONTROLLER VARIANZA', PAL.controller, [['faldone', 26], ['stampacchio', 26]], 700, 2,
+          ['Questa lotta non era a budget. Ma la approvo comunque.'], 'Scostamento negativo. Lo segnalo nel forecast.', 'Il budget dell\'anno prossimo è uguale a quest\'anno, meno il 10%. Come ogni anno.') },
+      { id: 'tax', x: 11, y: 6, dir: 'left', pal: PAL.tax, hint: 21,
+        trainer: T('TAX SPECIALIST ALIQUOTA', PAL.tax, [['bolletta', 26], ['foglietto', 27]], 700, 2,
+          ['Ogni lotta va dichiarata. Compiliamo il modulo dopo, prima lottiamo.'], 'Detrazione negata.', 'L\'IVA è una cosa seria. Anche i tuoi Officemon, a quanto vedo.') },
+      { id: 'legal', x: 18, y: 2, dir: 'down', pal: PAL.legal, hint: 22,
+        trainer: T('AVVOCATA LEGAL CLAUSOLA', PAL.legal, [['faldone', 27], ['pinzatrice', 27]], 750, 2,
+          ['Prima di lottare, leggi e accetta i termini e le condizioni. Tutte le 48 pagine.'], 'Mi riservo di impugnare la sconfitta.', 'Ricorda: GDPR, privacy by design e mai firmare senza leggere. Tranne i CONTRATTI con gli Officemon.') },
+      { id: 'cfo', x: 23, y: 6, dir: 'left', pal: PAL.cfo, hint: 23,
+        trainer: T('CFO MARGINE', PAL.cfo, [['espressone', 27], ['bolletta', 28]], 900, 3,
+          ['EBITDA, ARPU, churn. Sai cosa significano? Te lo spiego lottando.'], 'Il margine si è assottigliato. Molto.', 'L\'AD ti riceve solo se hai battuto Finance, Tax, Legal e Controlling.') },
+      { id: 'segretaria', x: 23, y: 3, dir: 'up', pal: PAL.segretaria, hint: 24, talk: () => segretariaTalk() },
+      { id: 'kevin4', x: 17, y: 2, dir: 'right', pal: PAL.kevin, trainer: TRAINERS.rival4 }
+    ]
+  },
+  ad: {
+    name: "UFFICIO DELL'AMMINISTRATORE DELEGATO",
     tiles: [
       '##############',
       '##W##W##W##W##',
-      '#B..........B#',
+      '#L..........L#',
       '#....DDDD....#',
       '#............#',
       '#P....,,....P#',
       '#.....,,.....#',
       '#.....,,.....#',
-      '#.....,,.....#',
       '######oo######'
     ],
-    warps: { '6,9': ['piano2', 16, 2, 'down'], '7,9': ['piano2', 16, 2, 'down'] },
+    warps: { '6,8': ['p4', 19, 2, 'down'], '7,8': ['p4', 19, 2, 'down'] },
     npcs: [
-      { id: 'boss', x: 6, y: 2, dir: 'down', pal: PAL.boss, talk: () => directorTalk() },
-      { id: 'segretaria', x: 2, y: 6, dir: 'right', pal: PAL.segretaria,
-        text: () => game.flags.champion ? ['SEGRETARIA: Congratulazioni per la promozione! Le ho già ordinato i biglietti da visita.'] : ['SEGRETARIA: Il Direttore la riceve subito. Ha l\'agenda piena, sia breve.', 'SEGRETARIA: Le consiglio di passare prima dalla macchinetta del caffè.'] }
+      { id: 'ad', x: 6, y: 2, dir: 'down', pal: PAL.ad, talk: () => adTalk() }
+    ]
+  },
+  via: {
+    name: 'VIA DELLA SEDE', outside: 'u', outdoor: true,
+    tiles: [
+      'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu',
+      'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu',
+      'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu',
+      'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu',
+      'uuuuuuuuuuuueeuuuuuuuuuuuuuuuu',
+      'ssssssssssssssssfsssssssssssss',
+      'sslsssnssssslsssfsislsssssnsls',
+      'aaaaakaaaaaaaaaaaaaaaaaakaaaaa',
+      'AAAAAkAAAAAAAAAAAAAAAAAAkAAAAA',
+      'rrrrrkrrrrrrrrrrrrrrrrrrkrrrrr',
+      'aaaaakaaaaaaaaaaaaaaaaaakaaaaa',
+      'sssssssssssssssssssssfssssssss',
+      'ssslsssssnsssslssssssfssssslss',
+      'GGGtGGqqqqqqGGGtGGqqqqqqqGtGGs',
+      'GqqqqqGGtGGqqqqqqqqqGGGqqqqqGs',
+      'ttGGqqqqtGGGqqqqtGGGqqqqqGGGGs',
+      'ttGGGGGGqqqqqqGGqqqqqqGGttttGs',
+      'tttttttttttttttttttttttttttttt'
+    ],
+    decor: [{ k: 'sede', x: 8, y: 0, w: 8, h: 5, door: 4, holes: [[12, 4], [13, 4]] }, { k: 'tram', x: 10, y: 8, w: 5, h: 2 }],
+    warps: {
+      '12,4': ['pt', 10, 9, 'up'], '13,4': ['pt', 11, 9, 'up'],
+      '29,13': ['piazza', 1, 12, 'right'], '29,14': ['piazza', 1, 12, 'right'], '29,15': ['piazza', 1, 13, 'right'], '29,16': ['piazza', 1, 13, 'right']
+    },
+    encounters: [['antennina', 15, 17, 30], ['smartfonino', 15, 17, 30], ['bolletta', 15, 16, 20], ['moka', 15, 16, 20]],
+    signs: {
+      '16,5': ['CARTELLO: "Lavori per la posa della fibra ottica. Fine lavori prevista: 2019." Qualcuno ha aggiunto a penna: "ahah".'],
+      '16,6': ['CARTELLO: "Lavori per la posa della fibra ottica. Fine lavori prevista: 2019." Qualcuno ha aggiunto a penna: "ahah".'],
+      '21,11': ['CARTELLO: "Marciapiede chiuso. Usare il marciapiede opposto." Il marciapiede opposto ha lo stesso cartello.'],
+      '21,12': ['CARTELLO: "Marciapiede chiuso. Usare il marciapiede opposto." Il marciapiede opposto ha lo stesso cartello.'],
+      '11,7': ['Il tram arancione è fermo qui dal 1928. Il tranviere legge il giornale. Dice che riparte "a breve".']
+    },
+    npcs: [
+      { id: 'barista_via', x: 1, y: 12, dir: 'right', pal: PAL.barista, hint: 31, talk: () => kioskTalk('BARISTA DEL CHIOSCO') },
+      { id: 'rider', x: 8, y: 11, dir: 'right', pal: PAL.rider, hint: 32,
+        trainer: T('RIDER IN CONSEGNA', PAL.rider, [['smartfonino', 17], ['graffetta', 17]], 500, 4,
+          ['Ho un sushi da consegnare in Isola entro dieci minuti. Tu sei sulla mia ciclabile!'], 'Cinque stelle a te, una stella a me.', 'Per la sede staccata? Passa dalla piazza delle fontane, poi il bosco in verticale, poi l\'Isola. E prega.') },
+      { id: 'runner', x: 26, y: 12, dir: 'left', pal: PAL.runner, hint: 33,
+        trainer: T('RUNNER DELLA PAUSA PRANZO', PAL.runner, [['cavetto', 17], ['antennina', 18]], 520, 3,
+          ['Corro dieci chilometri in pausa pranzo. Lottare con te è il mio defaticamento.'], 'Ho perso il ritmo. E la partita.', 'Il segreto per arrivare in sede staccata? Scarpe comode e niente fretta.') },
+      { id: 'passante1', x: 4, y: 5, dir: 'down', pal: PAL.passante, hint: 34, wander: true,
+        text: ['PASSANTE: La sede staccata? Ah, quella dopo l\'Isola. Ci vuole un\'ora a piedi. Due, con i cantieri.'] }
+    ]
+  },
+  piazza: {
+    name: 'PIAZZA DELLE FONTANE', outside: 'u', outdoor: true,
+    tiles: [
+      'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu',
+      'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu',
+      'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu',
+      'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu',
+      'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu',
+      'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu',
+      'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu',
+      'yyyyyyyyyyyyyyyyyyyyyyyyyyfGGt',
+      'yyFFyyyyyynyyyyyyyynyyyyyyfGGG',
+      'yyyyytyyyyyyyy~~yyyyyyyytyfGGG',
+      'yyyyyyyylyyy~~~~~~yyyylyyyfGGG',
+      'yyyyyyyyyyyy~~~~~~yyyyyyyyfGGG',
+      'yyyyyyyyyyyy~~~~~~yyyyyyyyfqqG',
+      'yyyyyyyyyyyy~~~~~~yyyyyyyyfqqG',
+      'yyyyyyyyyyyy~~~~~~yyyyyyyyfqqG',
+      'fffffyyylyyyyy~~yyyyyylyyyfGGG',
+      'GqqGytyyyyyyyyyyyyyyyyyytyfGGG',
+      'GGGGyyyyyynyyyyyyyynyyyyyyfGGG',
+      'qqqqqqqqqGGGqqtqqqGGGqtqqqqqqq',
+      'tttttttttttttttttttttttttttttt'
+    ],
+    decor: [{ k: 'vetro', x: 1, y: 0, w: 4, h: 7 }, { k: 'torre', x: 11, y: 0, w: 6, h: 7 }, { k: 'vetro', x: 19, y: 1, w: 3, h: 6 }, { k: 'vetro', x: 23, y: 0, w: 5, h: 7 },
+      { k: 'jets', x: 12, y: 11, w: 6, h: 1, n: 5, nosolid: true }],
+    warps: {
+      '0,11': ['via', 28, 13, 'left'], '0,12': ['via', 28, 13, 'left'], '0,13': ['via', 28, 14, 'left'],
+      '29,8': ['bosco', 1, 10, 'right'], '29,9': ['bosco', 1, 11, 'right']
+    },
+    encounters: [['ripetitore', 16, 18, 30], ['smartfonino', 16, 18, 25], ['antennina', 17, 18, 25], ['graffetta', 16, 17, 15], ['espressone', 18, 18, 5]],
+    signs: {
+      '26,10': ['CARTELLO: "Uscita verso il bosco chiusa per allestimento evento. Girare dal retro." Il retro è un prato abbandonato.'],
+      '13,6': ['Una torre altissima con una guglia che punta al cielo. Di sera si accende di mille colori.'],
+      '14,6': ['Una torre altissima con una guglia che punta al cielo. Di sera si accende di mille colori.']
+    },
+    npcs: [
+      { id: 'turista', x: 7, y: 12, dir: 'right', pal: PAL.turista, hint: 35,
+        trainer: T('TURISTA CON LA MAPPA', PAL.turista, [['antennina', 18], ['ripetitore', 18]], 540, 3,
+          ['Excuse me! Ehm, scusi! La fermata del tram? Non lo sa? Allora lottiamo!'], 'Grazie! Ora mi sono perso con più dignità.', 'Questa piazza è la più bella della città. La guglia della torre si vede da tutta Milano.') },
+      { id: 'influencer', x: 20, y: 14, dir: 'left', pal: PAL.influencer, hint: 36,
+        trainer: T('INFLUENCER DELLE FONTANE', PAL.influencer, [['smartfonino', 19], ['cuffietta', 19]], 560, 3,
+          ['Sono in diretta con 200.000 follower. Saluta! E ora lottiamo, che fa engagement.'], 'Ok, questa la taglio dalla storia.', 'Le fontane della piazza si alzano e si abbassano a ritmo. Perfette per i reel.') },
+      { id: 'nonna', x: 22, y: 8, dir: 'down', pal: PAL.nonna, hint: 38,
+        text: ['SIGNORA CON IL CANE: Una volta qui era tutto prati e officine. Adesso ci sono le torri. E i ragazzi con i computer che corrono sempre.'] },
+      { id: 'architetto0', x: 4, y: 10, dir: 'right', pal: PAL.architetto, hint: 39,
+        text: ['ARCHITETTO: Questa piazza è sopraelevata di sei metri. Si vede tutta la città. E nessuna uscita aperta.'] }
+    ]
+  },
+  bosco: {
+    name: 'IL BOSCO IN VERTICALE', outside: 'u', outdoor: true,
+    tiles: [
+      'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu',
+      'uuuuuuuuuuuuuuuuuuffffffffffuu',
+      'GGuuuuuGGGuuuuGGGGfaaaaaaaafGG',
+      'GGuuuuuGGGuuuuGGGGfaaaaaaaafGG',
+      'GGuuuuuGGGuuuuGGGGfaaaaaaaafGG',
+      'GGuuuuuGGGuuuuGGGGfaaaaaaaafGG',
+      'GGuuuuuGGGuuuuGGGGfaaaaaaaafGG',
+      'GGuuuuuGGGuuuuGGGGfaaaaaaaafGG',
+      'GGuuuuuGGGuuuuGGGGffffffffffGG',
+      'ssssssslssssssslssssssslfsssst',
+      'sssssssssfGGGGGGGsGGGGGGfGGlGs',
+      'sGGGGGGGGfGGGGGGGfGGGGGGfGGGGs',
+      'GqqqqqqqGfGGGGGGGfqqqqqqfqqqqt',
+      'GqqqqqqqGfqqqqqqGfqqqqqqfqqqqt',
+      'GqqttqqqGfqqqqqqGfqqqqqqfqqqqt',
+      'GGGttGGGGfqqttqqGfqttqqqfqqqqt',
+      'GGqttqqGGfGGttGGGfqttqqqfqqqqt',
+      'GGqqqqqGGfGqttqqGfqttqqqfttqqt',
+      'GGqqqqqGGfGqqqqqGfqqqqqqfttqqt',
+      'GGqqqqqGGfGqqqqqGGqqqqqqfttqqt',
+      'GGGGGGGGGGGGGGGGGGGGGGGGqqqGGt',
+      'tttttttttttttttttttttttttttttt'
+    ],
+    decor: [{ k: 'bosco', x: 2, y: 0, w: 5, h: 9 }, { k: 'bosco', x: 10, y: 1, w: 4, h: 8 }, { k: 'gru', x: 22, y: 2, w: 2, h: 6, nosolid: true }],
+    warps: {
+      '0,10': ['piazza', 28, 8, 'left'], '0,11': ['piazza', 28, 9, 'left'],
+      '29,10': ['isola', 1, 10, 'right'], '29,11': ['isola', 1, 11, 'right']
+    },
+    encounters: [['antennina', 17, 19, 25], ['ripetitore', 17, 19, 20], ['foglietto', 17, 18, 15], ['faldone', 18, 20, 15], ['bolletta', 17, 19, 20], ['rackone', 19, 20, 5]],
+    signs: {
+      '24,9': ['CARTELLO: "Cantiere. Divieto di accesso. Deviazione pedonale: seguire le frecce." Non ci sono frecce.'],
+      '24,10': ['CARTELLO: "Cantiere. Divieto di accesso. Deviazione pedonale: seguire le frecce." Non ci sono frecce.'],
+      '9,10': ['CARTELLO: "Prato in rigenerazione. Non calpestare." Il prato ha un\'aria piuttosto desolata.']
+    },
+    npcs: [
+      { id: 'architetto', x: 8, y: 9, dir: 'down', pal: PAL.architetto, hint: 40,
+        trainer: T('ARCHITETTO PAESAGGISTA', PAL.architetto, [['foglietto', 19], ['faldone', 20]], 600, 3,
+          ['Due torri con 800 alberi sui balconi. Un capolavoro. E tu ci passi davanti senza guardarle?'], 'Le metto in un progetto. Nella sezione "imprevisti".', 'Le torri del bosco hanno più alberi di un parco. I giardinieri si calano dal tetto con le corde.') },
+      { id: 'operaio', x: 23, y: 11, dir: 'down', pal: PAL.operaio, hint: 41,
+        trainer: T('OPERAIO DEL CANTIERE', PAL.operaio, [['pinzatrice', 20], ['cavetto', 20]], 620, 4,
+          ['Qui si posa la fibra! O si posava. Non ricordo più. Comunque non si passa senza lottare.'], 'Va bene, ti apro un varco. Metaforicamente.', 'Questo cantiere doveva finire tre anni fa. La gru ormai fa parte del panorama.') },
+      { id: 'giardiniera', x: 14, y: 10, dir: 'left', pal: PAL.po, hint: 42, wander: true,
+        text: ['GIARDINIERA: Queste sono le Terre Desolate del quartiere. Erba alta, cantieri e Officemon selvatici dappertutto. Stai attento.'] }
+    ]
+  },
+  isola: {
+    name: "QUARTIERE DELL'ISOLA", outside: 'u', outdoor: true,
+    tiles: [
+      'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu',
+      'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu',
+      'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu',
+      'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu',
+      'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu',
+      'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu',
+      'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu',
+      'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu',
+      'uuuuuuuuuuuuuuuuuuuuuuuuueeuuu',
+      'ssssssssssssssfsssssssssssssss',
+      'ssjsjssssjsnssfsslsissssssssls',
+      'ssssssssssssssfsssssssslssssss',
+      'aaaaaakaaaaaaaaaaaaaakaaaaaaaa',
+      'rrrrrrkrrrrrrrrrrrrrrkrrrrrrrr',
+      'aaaaaakaaaaaaaaaaaaaakaaaaaaaa',
+      'slsssssssslsssssfsssssssslssss',
+      'uuuuuuuufGGGGGGGGGGGGfuuuuuuuu',
+      'uuuuuuuufqqqtqqqqqqqqfuuuuuuuu',
+      'uuuuuuuufqqqqqqqqtqqqfuuuuuuuu',
+      'uuuuuuuufqqqqqcqqqqqqfuuuuuuuu',
+      'uuuuuuuuffffffffffffffuuuuuuuu',
+      'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu'
+    ],
+    decor: [{ k: 'palazzo', x: 0, y: 3, w: 5, h: 6, v: 0, graffiti: true }, { k: 'palazzo', x: 5, y: 2, w: 5, h: 7, v: 1 },
+      { k: 'palazzo', x: 10, y: 3, w: 5, h: 6, v: 2, awning: '#3878c8' }, { k: 'palazzo', x: 15, y: 2, w: 6, h: 7, v: 3, graffiti: true },
+      { k: 'sede', x: 22, y: 0, w: 8, h: 9, door: 3, color: '#c8d0d8', band: '#c02828', label: 'SEDE 2', holes: [[25, 8], [26, 8]] },
+      { k: 'palazzo', x: 0, y: 16, w: 8, h: 6, v: 4 }, { k: 'palazzo', x: 22, y: 16, w: 8, h: 6, v: 1, graffiti: true, awning: '#48a048' }],
+    warps: {
+      '0,10': ['bosco', 28, 10, 'left'], '0,11': ['bosco', 28, 11, 'left'],
+      '25,8': ['sede2pt', 7, 5, 'up'], '26,8': ['sede2pt', 8, 5, 'up']
+    },
+    encounters: [['smartfonino', 18, 20, 25], ['cuffietta', 18, 20, 20], ['tazzino', 18, 20, 15], ['moka', 19, 20, 15], ['pinzatrice', 19, 21, 15], ['postit', 18, 19, 10]],
+    signs: {
+      '14,9': ['CARTELLO: "Marciapiede chiuso per lavori di riqualificazione." Dietro il cartello ci sono altri tre cartelli.'],
+      '16,15': ['CARTELLO: "Area ex scalo merci. In attesa di progetto dal 2005."'],
+      '7,12': ['Le rotaie del tram attraversano il quartiere. Il tram passa ogni sette minuti, dicono. Nessuno l\'ha mai visto.']
+    },
+    npcs: [
+      { id: 'hipster', x: 3, y: 11, dir: 'up', pal: PAL.hipster, hint: 43, talk: () => kioskTalk('BARISTA HIPSTER') },
+      { id: 'writer', x: 12, y: 15, dir: 'left', pal: PAL.writer, hint: 44,
+        trainer: T('STREET ARTIST BOMBOLETTA', PAL.writer, [['postit', 20], ['bolletta', 21]], 650, 3,
+          ['Ehi! Questo muro è la mia tela e tu sei nella mia inquadratura!'], 'Ok, ti dipingo nel prossimo murale. Come sconfitto, però.', 'L\'Isola è piena di murales. Il più bello è quello del Dott. Baldinazzo che fa le bolle di sapone. Non chiedermi perché.') },
+      { id: 'kevin3', x: 23, y: 10, dir: 'left', pal: PAL.kevin, trainer: TRAINERS.rival3 },
+      { id: 'barman2', x: 27, y: 11, dir: 'left', pal: PAL.barista, hint: 2,
+        trainer: T('BARISTA DELL\'APERITIVO', PAL.barista, [['moka', 20], ['tazzino', 21], ['espressone', 21]], 700, 3,
+          ['Sono le sei. È l\'ora dello spritz. Ma prima, una lotta per aprire l\'appetito.'], 'Ti offro un tagliere. Te lo sei meritato.', 'La sede staccata è proprio qui sopra. L\'ingresso è quella porta a vetri.') }
+    ]
+  },
+  sede2pt: {
+    name: 'SEDE STACCATA - PIANO TERRA',
+    tiles: [
+      '################',
+      '##W##W##S##W####',
+      '#P............P#',
+      '#..RRR.........#',
+      '#..........hh..#',
+      '#P............P#',
+      '#######oo#######'
+    ],
+    warps: { '7,6': ['isola', 25, 9, 'down'], '8,6': ['isola', 26, 9, 'down'], '8,1': ['sede2p1', 2, 9, 'down'] },
+    npcs: [
+      { id: 'recept2', x: 4, y: 2, dir: 'down', pal: PAL.recept2, hint: 40, talk: () => recept2Talk() },
+      { id: 'divano2', x: 12, y: 3, dir: 'down', pal: PAL.visitor, hint: 27,
+        text: ['COLLEGA DELLA SEDE PRINCIPALE: Sono partito stamattina dalla sede principale. Sono arrivato adesso. Ho già voglia di ripartire domani.'] }
+    ]
+  },
+  sede2p1: {
+    name: 'SEDE STACCATA - 1° PIANO',
+    tiles: [
+      '##############################',
+      '#W##Z##W###Z##W##N##N##W##N###',
+      '#.........#.........#........#',
+      '#.CDC.CDC.#..TTT....#C.C.C.C.#',
+      '#.........#.........#........#',
+      '#.CDC.CDC.#..hh..P..#C.C.C.C.#',
+      '#.........#.........#........#',
+      '#P.......P#P.......P#P......P#',
+      '##S##.#########.#########.####',
+      '#............................#',
+      '#P..........K...............P#',
+      '##############################'
+    ],
+    warps: { '2,8': ['sede2pt', 8, 2, 'down'] },
+    npcs: [
+      { id: 'sales', x: 5, y: 2, dir: 'down', pal: PAL.sales, hint: 28, talk: () => salesTalk() },
+      { id: 'salesrep', x: 2, y: 4, dir: 'right', pal: PAL.salesrep, hint: 15,
+        trainer: T('SALES ACCOUNT TARGET', PAL.salesrep, [['bolletta', 21], ['smartfonino', 22]], 700, 3,
+          ['Ti propongo un\'offerta imperdibile: una lotta a costo zero, senza vincoli!'], 'Ok, ci risentiamo il prossimo trimestre.', 'La nostra offerta più venduta? Quella con la parola "illimitato". Funziona sempre.') },
+      { id: 'mkt', x: 15, y: 2, dir: 'down', pal: PAL.mkt, hint: 36, talk: () => mktTalk() },
+      { id: 'mktcopy', x: 12, y: 6, dir: 'right', pal: PAL.mktcopy, hint: 21,
+        trainer: T('COPYWRITER CLAIM', PAL.mktcopy, [['postit', 22], ['ripetitore', 22]], 720, 3,
+          ['Ho scritto 400 slogan per la nuova offerta. Il migliore è "Latenza Zero, Pensieri Zero". Tu che ne dici? Dimmelo lottando.'], 'Scartato. Come i miei 400 slogan.', 'In marketing la regola è una: se non è nel brief, non esiste.') },
+      { id: 'cc', x: 25, y: 2, dir: 'down', pal: PAL.cc, hint: 13, talk: () => ccTalk() },
+      { id: 'ccop', x: 22, y: 4, dir: 'down', pal: PAL.ccop, hint: 9,
+        trainer: T('OPERATORE CUSTOMER CARE', PAL.ccop, [['cuffietta', 22], ['cuffietta', 23]], 720, 2,
+          ['Buongiorno, sono l\'operatore 47. Per lottare, prema 1. Per lottare comunque, prema 2.'], 'La ringrazio per averci contattato. La chiamata potrebbe essere registrata.', 'Il cliente più difficile di oggi voleva il 5G sulla linea fissa. Gliel\'abbiamo spiegato con calma. Tre volte.') },
+      { id: 'ccop2', x: 26, y: 6, dir: 'left', pal: PAL.cc, hint: 12,
+        text: ['OPERATRICE CUSTOMER CARE: La musica d\'attesa è sempre la stessa da dieci anni. La sappiamo tutti a memoria. Anche i clienti.'] }
     ]
   }
 };
@@ -195,14 +698,32 @@ const MAPS = {
 const TILE_TEXT = {
   K: () => useCoffee(),
   v: () => vendingShop(),
-  B: ['Un classificatore pieno di pratiche. Alcune risalgono al 1987.'],
-  C: () => say(['Sullo schermo: 147 email non lette.', 'Sullo schermo: "Aggiornamento in corso, non spegnere il PC" (da tre giorni).', 'Sullo schermo: un foglio Excel con 40.000 righe.', 'Sullo schermo: una videochiamata con la telecamera spenta.'][Math.floor(Math.random() * 4)]),
+  B: ['Un classificatore pieno di pratiche. Alcune risalgono ai tempi delle schede telefoniche.'],
+  C: () => say(['Sullo schermo: 147 email non lette e un invito a una riunione "veloce" di due ore.', 'Sullo schermo: una dashboard con il traffico dati in tempo reale. Le linee salgono.', 'Sullo schermo: un foglio Excel con 40.000 righe di SIM attivate.', 'Sullo schermo: una videochiamata con la telecamera spenta e il microfono acceso.', 'Sullo schermo: "Deploy completato con successo." Qualcuno ha scritto sotto: "venerdì sera, coraggioso".'][Math.floor(Math.random() * 5)]),
   D: ['Una scrivania ordinata. Troppo ordinata. Sospetto.'],
-  Q: ['Il server ronza minaccioso. Una spia lampeggia: tutto bene, credo.'],
+  Q: ['Un rack di server. Ronza, lampeggia e scalda come una stufa. Tutto regolare.'],
   w: ['Acqua fresca dal boccione. Ti senti idratato e produttivo.'],
-  h: ['Un divanetto per gli ospiti. Comodo, ma non è il momento di riposare.'],
+  h: ['Un divanetto. Comodo, ma non è il momento di riposare.'],
   T: ['Un tavolo condiviso. C\'è una tazza dimenticata da chissà quando.'],
   P: ['Una pianta finta. In dieci anni nessuno se n\'è mai accorto.'],
-  R: ['Il bancone della reception. C\'è un campanello: DLIN!'],
-  x: ['La stampante è inceppata. Come sempre.']
+  R: ['Un bancone. C\'è un campanello: DLIN!'],
+  x: ['La stampante è inceppata. Come sempre.'],
+  Z: ['Una lavagna kanban piena di post-it. La colonna "DONE" è vuota. La colonna "TO DO" è piena.'],
+  N: ['Un maxischermo con le dashboard aziendali: attivazioni, traffico, NPS. Tutti i numeri sono verdi. Quasi.'],
+  L: ['Una libreria piena di manuali: "Reti 5G per tutti", "Il project management spiegato al mio gatto", "Excel: amore e odio".'],
+  U: ['Una parete di vetro. Qualcuno ci ha disegnato un grafico con il pennarello.'],
+  c: ['Una pila di pacchi pronti per la spedizione. Modem, SIM, router. Destinazione: clienti B2B.'],
+  n: ['Una panchina. Ci si siederebbe volentieri, ma la strada è ancora lunga.'],
+  l: ['Un lampione. Fa luce. Fa il suo lavoro. Rispetto.'],
+  t: ['Un albero. Nella città dei cantieri, ogni albero è un piccolo miracolo.'],
+  f: ['Una recinzione da cantiere bianca e arancione. La città ne è piena.'],
+  '~': ['Acqua limpida. Le fontane danzano a ritmo di una musica che senti solo tu.'],
+  F: ['Un\'aiuola fiorita. Qualcuno se ne prende cura ogni giorno.'],
+  j: ['Un tavolino all\'aperto. Sopra ci sono due spritz mezzi pieni e un portatile aperto.'],
+  i: ['Un parcheggio di bici e monopattini. Metà sono senza ruote.'],
+  r: ['Le rotaie del tram. Il tram, però, non si vede.'],
+  a: ['La strada. Le auto passano veloci: meglio usare le strisce pedonali.'],
+  A: ['La strada. Le auto passano veloci: meglio usare le strisce pedonali.'],
+  u: ['Un palazzo. Al terzo piano qualcuno sta facendo una call sul balcone.'],
+  V: ['Una griglia di aerazione. Da dentro arriva un leggero profumo di libri e caffè.']
 };

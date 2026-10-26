@@ -47,7 +47,8 @@ async function startBattle(opts) {
   pop(BattleLayer);
   BT = null;
   if (lost) await blackout();
-  Sound.play('town');
+  else Bald.afterBattle();
+  Sound.play(map && map.outdoor ? 'city' : 'town');
   await fadeIn(16);
   if (lost) await say('Una buona tazza di caffè e la squadra è di nuovo in piena forma! Attento a non esagerare con il lavoro.');
   return result;

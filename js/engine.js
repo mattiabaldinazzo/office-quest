@@ -257,6 +257,11 @@ function say(msg, opts = {}) {
       },
       draw() {
         const s = STYLES[style];
+        if (opts.portrait) {
+          frame(2, 62, 54, 52, 'menu');
+          rect(5, 65, 48, 46, '#d8e4f0');
+          ctx.drawImage(Sprites.portrait(opts.portrait), 5, 64);
+        }
         frame(g.x, g.y, g.w, g.h, style);
         let left = Math.floor(chars);
         lines.slice(page, page + 2).forEach((ln, i) => {

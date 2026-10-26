@@ -1,409 +1,6 @@
 'use strict';
-// Mondo di gioco: esplorazione, storia, menu, salvataggi.
-const SAVE_KEY = 'office-quest-save-v1';
-const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
-const OPP = { up: 'down', down: 'up', left: 'right', right: 'left' };
-const WALKABLE = '.,gESOo';
-const FACE_ROW = '#WESOb';
-const PLURAL = { contratto: 'CONTRATTI', caffe: 'CAFFÈ', espresso: 'ESPRESSI DOPPI', cornetto: 'CORNETTI' };
-
-let game = null;
-let map = null, curMapId = null, npcs = [], banner = null, busy = false;
-const player = { x: 0, y: 0, dir: 'down', moving: false, prog: 0, speed: 1, parity: false, wasMoving: false, turnDelay: 0, lastBump: 0 };
-
-function resetGame() {
-  game = {
-    name: 'Nuovo', party: [], bag: { contratto: 0, caffe: 0, espresso: 0, cornetto: 0 }, money: 500,
-    flags: {}, heal: { map: 'open', x: 20, y: 4, dir: 'right' }, time: 0, started: false
-  };
-}
-resetGame();
-
-// ---------- Mappe ----------
-function loadMap(id, x, y, dir) {
-  curMapId = id;
-  map = MAPS[id];
-  npcs = map.npcs.map(n => Object.assign({}, n, { ox: 0, oy: 0, fr: 0, timer: 60 + Math.floor(Math.random() * 120) }));
-  Object.assign(player, { x, y, dir, moving: false, prog: 0, wasMoving: false, turnDelay: 0 });
-  banner = { text: map.name, t: 0 };
-}
-function tileAt(x, y) {
-  const row = map.tiles[y];
-  if (!row || x < 0 || x >= row.length) return 'X';
-  return row[x];
-}
-function walkable(x, y) { return WALKABLE.includes(tileAt(x, y)); }
-function activeNpcs() {
-  return npcs.filter(n => (!n.show || n.show()) && !(n.kind === 'item' && game.flags[n.id]));
-}
-function npcAt(x, y) { return activeNpcs().find(n => n.x === x && n.y === y); }
-function npcById(id) { return npcs.find(n => n.id === id); }
-
-function tileUnder(x, y) {
-  return (tileAt(x - 1, y) === ',' || tileAt(x + 1, y) === ',') ? 'floor' : 'carpet';
-}
-function drawTile(x, y, sx, sy) {
-  const ch = tileAt(x, y);
-  const v = ((x * 7 + y * 13) % 4 + 4) % 4;
-  let img;
-  if (ch === '#') {
-    const below = tileAt(x, y + 1);
-    img = Sprites.tile(below !== 'X' && !FACE_ROW.includes(below) ? '#face' : '#top');
-  } else if (ch === 'b') img = Sprites.tile('B', v, 'face');
-  else img = Sprites.tile(ch, v, tileUnder(x, y));
-  ctx.drawImage(img, sx, sy);
-}
-
-function playerPixel() {
-  const [dx, dy] = DIRS[player.dir];
-  const k = player.moving ? player.prog : 0;
-  return [player.x * TS + dx * k, player.y * TS + dy * k];
-}
-
-const Overworld = {
-  opaque: true,
-  update() {
-    if (busy) return;
-    for (const n of activeNpcs()) {
-      if (!n.wander) continue;
-      if (--n.timer <= 0) {
-        n.dir = ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)];
-        n.timer = 90 + Math.floor(Math.random() * 160);
-      }
-    }
-    updatePlayer();
-  },
-  draw() {
-    const [px, py] = playerPixel();
-    const camX = Math.round(px - 112), camY = Math.round(py - 72);
-    rect(0, 0, W, H, '#101018');
-    const x0 = Math.floor(camX / TS), y0 = Math.floor(camY / TS);
-    for (let ty = y0; ty <= y0 + 11; ty++) for (let tx = x0; tx <= x0 + 15; tx++) drawTile(tx, ty, tx * TS - camX, ty * TS - camY);
-    const ents = activeNpcs().map(n => ({ n, x: n.x * TS + n.ox, y: n.y * TS + n.oy }));
-    ents.push({ p: true, x: px, y: py });
-    ents.sort((a, b) => a.y - b.y);
-    for (const e of ents) {
-      const sx = Math.round(e.x - camX), sy = Math.round(e.y - camY);
-      if (e.p) {
-        const fr = player.moving ? (player.prog < 8 ? (player.parity ? 1 : 2) : 0) : 0;
-        ctx.drawImage(Sprites.character(PAL.player, player.dir, fr), sx, sy - 5);
-        continue;
-      }
-      const n = e.n;
-      if (n.kind === 'folder') ctx.drawImage(Sprites.obj('folder', n.color), sx, sy - 3);
-      else if (n.kind === 'item') ctx.drawImage(Sprites.obj('item'), sx, sy);
-      else ctx.drawImage(Sprites.character(n.pal, n.dir, n.fr || 0), sx, sy - 5);
-      if (n.bubble) ctx.drawImage(Sprites.obj('bubble'), sx, sy - 22);
-    }
-    if (banner) {
-      const t = banner.t++;
-      if (t > 160) banner = null;
-      else {
-        const y = t < 12 ? -22 + t * 2 : t > 140 ? 2 - (t - 140) * 1.2 : 2;
-        const w = textW(banner.text, 6) + 20;
-        frame(2, Math.round(y), w, 20, 'menu');
-        txt(banner.text, 12, Math.round(y) + 7, { size: 6 });
-      }
-    }
-  }
-};
-
-function updatePlayer() {
-  const p = player;
-  if (p.moving) {
-    p.prog += p.speed;
-    if (p.prog >= TS) {
-      const [dx, dy] = DIRS[p.dir];
-      p.x += dx; p.y += dy;
-      p.moving = false; p.prog = 0;
-      onStep();
-    }
-    return;
-  }
-  if (Input.hit('start')) { Sound.sfx('select'); runScript(startMenu); return; }
-  if (Input.hit('a')) { interact(); return; }
-  const d = Input.heldDir();
-  if (!d) { p.wasMoving = false; p.turnDelay = 0; return; }
-  if (d !== p.dir) {
-    p.dir = d;
-    if (!p.wasMoving) { p.turnDelay = 7; return; }
-  }
-  if (p.turnDelay > 0) { p.turnDelay--; if (p.turnDelay > 0) return; }
-  const [dx, dy] = DIRS[d];
-  if (walkable(p.x + dx, p.y + dy) && !npcAt(p.x + dx, p.y + dy)) {
-    p.moving = true; p.prog = 0;
-    p.speed = Input.held('b') ? 2 : 1;
-    p.parity = !p.parity;
-    p.wasMoving = true;
-  } else {
-    p.wasMoving = false;
-    if (frameCount - p.lastBump > 20) { Sound.sfx('bump'); p.lastBump = frameCount; }
-  }
-}
-
-function onStep() {
-  const w = map.warps && map.warps[`${player.x},${player.y}`];
-  if (w) { runScript(() => doWarp(w)); return; }
-  const t = spottingTrainer();
-  if (t) { runScript(() => trainerSpotted(t)); return; }
-  if (tileAt(player.x, player.y) === 'g' && map.encounters && Math.random() < 0.1 && game.party.some(m => m.hp > 0)) {
-    const mon = rollEncounter();
-    runScript(() => startBattle({ wild: mon }));
-  }
-}
-
-function rollEncounter() {
-  const list = map.encounters;
-  let r = Math.random() * list.reduce((s, e) => s + e[3], 0);
-  for (const [sp, a, b, wgt] of list) {
-    if ((r -= wgt) <= 0) return makeMon(sp, a + Math.floor(Math.random() * (b - a + 1)));
-  }
-  const [sp, a] = list[0];
-  return makeMon(sp, a);
-}
-
-function spottingTrainer() {
-  for (const n of activeNpcs()) {
-    if (!n.trainer || !n.trainer.sight || game.flags['def_' + n.id]) continue;
-    const [dx, dy] = DIRS[n.dir];
-    for (let i = 1; i <= n.trainer.sight; i++) {
-      const tx = n.x + dx * i, ty = n.y + dy * i;
-      if (tx === player.x && ty === player.y) return n;
-      if (!walkable(tx, ty) || npcAt(tx, ty)) break;
-    }
-  }
-  return null;
-}
-
-async function runScript(fn) {
-  if (busy) return;
-  busy = true;
-  try { await fn(); } catch (e) { console.error(e); }
-  busy = false;
-  player.wasMoving = false;
-}
-
-async function doWarp(w) {
-  Sound.sfx('door');
-  await fadeOut(10);
-  loadMap(w[0], w[1], w[2], w[3]);
-  await fadeIn(10);
-}
-
-async function npcWalk(n) {
-  const [dx, dy] = DIRS[n.dir];
-  n.parity = !n.parity;
-  await animate(16, t => { n.ox = dx * 16 * t; n.oy = dy * 16 * t; n.fr = t < 0.5 ? (n.parity ? 1 : 2) : 0; });
-  n.x += dx; n.y += dy; n.ox = 0; n.oy = 0; n.fr = 0;
-}
-
-async function trainerSpotted(n) {
-  Sound.sfx('alert');
-  n.bubble = true;
-  await wait(40);
-  n.bubble = false;
-  while (Math.abs(player.x - n.x) + Math.abs(player.y - n.y) > 1) await npcWalk(n);
-  player.dir = OPP[n.dir];
-  await trainerBattle(n);
-}
-
-async function trainerBattle(n) {
-  await sayAll(n.trainer.intro.map(s => `${n.trainer.title}: ${s}`));
-  const r = await startBattle({ trainer: n.trainer });
-  if (r === 'win') game.flags['def_' + n.id] = true;
-  return r;
-}
-
-function interact() {
-  const [dx, dy] = DIRS[player.dir];
-  const tx = player.x + dx, ty = player.y + dy;
-  let n = npcAt(tx, ty);
-  if (!n && 'DRC'.includes(tileAt(tx, ty))) n = npcAt(tx + dx, ty + dy);
-  if (n) { runScript(() => talkNpc(n)); return; }
-  const sign = map.signs && map.signs[`${tx},${ty}`];
-  if (sign) { runScript(() => sayAll(sign)); return; }
-  let ch = tileAt(tx, ty);
-  if (ch === 'b') ch = 'B';
-  const t = TILE_TEXT[ch];
-  if (t) runScript(() => typeof t === 'function' ? t() : sayAll(t));
-}
-
-async function talkNpc(n) {
-  if (n.kind === 'item') { await pickupItem(n); return; }
-  if (n.kind === 'folder') { await n.talk(n); return; }
-  n.dir = OPP[player.dir];
-  if (n.trainer && n.trainer.sight !== undefined) {
-    if (!game.flags['def_' + n.id]) { await trainerBattle(n); return; }
-    await say(`${n.trainer.title}: ${n.trainer.after}`);
-    return;
-  }
-  if (n.talk) { await n.talk(n); return; }
-  const t = typeof n.text === 'function' ? n.text() : n.text;
-  if (t) await sayAll(t);
-}
-
-async function pickupItem(n) {
-  game.flags[n.id] = true;
-  game.bag[n.item] = (game.bag[n.item] || 0) + n.qty;
-  Sound.sfx('fanfare');
-  const label = n.qty > 1 ? `${n.qty} ${PLURAL[n.item]}` : `un ${ITEMS[n.item].name.toUpperCase()}`;
-  await say(`${game.name} trova ${label}! Lo mette nello ZAINO.`);
-}
-
-function healAll() { for (const m of game.party) m.hp = maxHp(m); }
-
-async function flashScreen() {
-  await fadeOut(8, '255,255,255');
-  await fadeIn(12);
-}
-
-async function blackout() {
-  healAll();
-  game.money = Math.floor(game.money / 2);
-  const h = game.heal;
-  loadMap(h.map, h.x, h.y, h.dir);
-  banner = null;
-}
-
-// ---------- Eventi della storia ----------
-async function ferriTalk() {
-  if (!game.flags.metHR) {
-    await sayAll([
-      `FERRI: Eccoti, ${game.name}! Benvenuto all'OFFICE TOWER. Sono la Dott.ssa FERRI delle Risorse Umane.`,
-      'FERRI: Qui il lavoro lo fanno gli OFFICEMON: oggetti d\'ufficio che hanno preso vita e lavorano con noi.',
-      'FERRI: Ogni nuovo assunto riceve il suo primo Officemon. Sul tavolo qui sotto ci sono tre cartelline.',
-      'FERRI: FOGLIETTO è di tipo CARTA, TAZZINO di tipo CAFFÈ, MOUSINO di tipo TECH. Scegli con cura!'
-    ]);
-    game.flags.metHR = true;
-    return;
-  }
-  if (!game.flags.starter) { await say('FERRI: Allora? Scegli una delle cartelline sul tavolo!'); return; }
-  healAll();
-  Sound.sfx('heal');
-  if (!game.flags.champion) {
-    await sayAll([
-      'FERRI: Lascia che rimetta in forma la tua squadra... Ecco fatto!',
-      'FERRI: Ricorda: la CARTA batte il CAFFÈ, il CAFFÈ batte la TECH e la TECH batte la CARTA.',
-      'FERRI: Il DIRETTORE ti aspetta al secondo piano. Fatti valere!'
-    ]);
-  } else {
-    await sayAll(['FERRI: Il nostro nuovo CAPO REPARTO! Ho rimesso in forma la tua squadra.', 'FERRI: Lo sapevo che avevi talento fin dal primo colloquio.']);
-  }
-}
-
-function picLayer(sp) {
-  return { draw() { frame(84, 18, 72, 72); ctx.drawImage(Sprites.mon(sp), 96, 30); } };
-}
-
-async function folderTalk(n) {
-  const S = SPECIES[n.sp], name = S.name.toUpperCase();
-  if (game.flags.starter) { await say(`È la cartellina di ${name}. Resterà qui in ufficio, al sicuro.`); return; }
-  if (!game.flags.metHR) { await say('Tre cartelline personali. Meglio parlare prima con la Dott.ssa FERRI.'); return; }
-  const pic = push(picLayer(n.sp));
-  const yes = await ask(`Vuoi ${name}, l'Officemon di tipo ${TYPES[S.type].name}?`);
-  pop(pic);
-  if (!yes) return;
-  game.flags.starter = n.sp;
-  game.flags['taken_' + n.sp] = true;
-  game.party.push(makeMon(n.sp, 5));
-  Sound.sfx('fanfare');
-  await say(`${game.name} riceve ${name}!`);
-  await say(`FERRI: ${name} sembra già affezionato a te!`);
-  const kev = npcById('kevin');
-  const rsp = RIVAL_PICK[n.sp], rname = SPECIES[rsp].name.toUpperCase();
-  kev.dir = 'left';
-  await say(`KEVIN: Ehi, aspetta! Anch'io sono nuovo! Allora io prendo ${rname}!`);
-  game.flags['taken_' + rsp] = true;
-  Sound.sfx('fanfare');
-  await say(`KEVIN riceve ${rname}!`);
-  kev.dir = player.x > kev.x ? 'right' : player.y < kev.y ? 'up' : player.y > kev.y ? 'down' : 'left';
-  await say('KEVIN: Facciamo subito una prova sul campo. Vediamo chi è il vero talento qui!');
-  const r = await startBattle({ trainer: TRAINERS.rival1, canLose: true });
-  if (r === 'win') await say('KEVIN: Accidenti! La prossima volta vinco io, vedrai!');
-  else await say('KEVIN: Ah-ha! Lo sapevo, sono nato per questo lavoro!');
-  healAll();
-  Sound.sfx('heal');
-  await sayAll([
-    'FERRI: Che energia! Vi ho rimesso in sesto entrambi.',
-    'FERRI: Prendete anche questi: vi serviranno.'
-  ]);
-  game.bag.contratto += 5;
-  game.bag.caffe += 3;
-  Sound.sfx('fanfare');
-  await say(`${game.name} riceve 5 CONTRATTI e 3 CAFFÈ!`);
-  await sayAll([
-    'FERRI: Con i CONTRATTI potete assumere gli Officemon selvatici che vivono tra i cavi dell\'open space. Indeboliteli prima!',
-    'FERRI: Il vostro obiettivo è farvi notare dal DIRETTORE, al secondo piano. Buon primo giorno!',
-    `KEVIN: Ci vediamo ai piani alti, ${game.name}!`
-  ]);
-  await fadeOut(10);
-  game.flags.rival1 = true;
-  await fadeIn(10);
-}
-
-async function directorTalk() {
-  const n = npcById('boss');
-  n.dir = 'down';
-  if (!game.flags.champion) {
-    await sayAll([
-      'DIRETTORE: Mmh? Ah, sei tu il nuovo arrivato di cui parlano tutti.',
-      'DIRETTORE: Hai battuto mezzo ufficio, ho saputo. Ma qui conta una cosa sola: i risultati.',
-      'DIRETTORE: Vediamo se meriti davvero una promozione!'
-    ]);
-    const r = await startBattle({ trainer: TRAINERS.boss, boss: true });
-    if (r !== 'win') return;
-    game.flags.champion = true;
-    game.flags.def_boss = true;
-    await sayAll([
-      'DIRETTORE: In trent\'anni di carriera non avevo mai visto una squadra così affiatata.',
-      `DIRETTORE: Da oggi ${game.name} è il nuovo CAPO REPARTO dell'OFFICE TOWER!`
-    ]);
-    Sound.sfx('fanfare');
-    await credits();
-    await say('Ricordati di salvare la partita dal menu START. Il Direttore accetta anche rivincite!');
-  } else if (await ask('DIRETTORE: Già di ritorno? Vuoi una revisione di metà anno? Intendo... una rivincita.')) {
-    const r = await startBattle({ trainer: TRAINERS.bossRematch, boss: true });
-    if (r === 'win') await say('DIRETTORE: Va bene, va bene. Ti aumento lo stipendio. Dell\'1%.');
-  } else {
-    await say('DIRETTORE: Allora torna al lavoro, CAPO REPARTO.');
-  }
-}
-
-async function useCoffee() {
-  await say('È la macchinetta del caffè aziendale. Che profumo!');
-  if (!game.party.length) { await say('Ti prendi un caffè. Ora sei pronto per lavorare!'); return; }
-  if (await ask('Vuoi offrire un caffè alla tua squadra?')) {
-    healAll();
-    game.heal = { map: curMapId, x: player.x, y: player.y, dir: player.dir };
-    Sound.sfx('heal');
-    await flashScreen();
-    await say('Glu glu... La tua squadra è tornata in piena forma!');
-  }
-}
-
-async function vendingShop() {
-  await say('Un distributore automatico. Accetta buoni pasto.');
-  let i = 0;
-  const opts = ITEM_ORDER.map(k => ITEMS[k].name.padEnd(16) + String(ITEMS[k].price).padStart(4));
-  for (;;) {
-    const d = await say('Cosa vuoi comprare?', { keep: true, instant: true });
-    const k = await choose([...opts, 'ESCI'], {
-      cancel: opts.length, start: i,
-      drawExtra() { frame(2, 4, 64, 30); txt('BUONI', 10, 10, { size: 6 }); txt(String(game.money), 58, 21, { size: 6, align: 'right' }); }
-    });
-    pop(d);
-    if (k === opts.length) break;
-    i = k;
-    const key = ITEM_ORDER[k], it = ITEMS[key];
-    if (game.money < it.price) { await say('Non hai abbastanza buoni pasto!'); continue; }
-    if (await ask(`${it.name.toUpperCase()} costa ${it.price} buoni pasto. Lo compri?`)) {
-      game.money -= it.price;
-      game.bag[key] = (game.bag[key] || 0) + 1;
-      Sound.sfx('coin');
-      await say(`Clonk! Hai comprato ${it.name.toUpperCase()}.`);
-    }
-  }
-}
+// Menu, salvataggi, titolo, introduzione, titoli di coda e avvio.
+const SAVE_KEY = 'office-quest-save-v2';
 
 // ---------- Squadra ----------
 function partyScreen(o = {}) {
@@ -626,14 +223,22 @@ function trainerCard() {
         frame(10, 8, 220, 144, 'menu');
         rect(14, 12, 212, 18, '#3870c8');
         txt('TESSERINO AZIENDALE', 120, 17, { size: 6, align: 'center', color: '#f8f8f8', shadow: '#204890' });
-        const rows = [['NOME', game.name], ['RUOLO', game.flags.champion ? 'Capo reparto' : 'Neoassunto'], ['BUONI PASTO', game.money],
-          ['TEMPO', fmtTime(game.time)], ['OFFICEMON', game.party.length], ['LOTTE VINTE', defeatedCount()]];
+        const f = game.flags;
+        const rows = [['NOME', game.name], ['RUOLO', f.champion ? 'Capo reparto' : 'Neoassunto'], ['BUONI PASTO', game.money],
+          ['TEMPO', fmtTime(game.time)], ['OFFICEMON', game.party.length], ['LOTTE VINTE', defeatedCount()],
+          ['INCONTRI DOTT. B.', Bald.count()], ['UFFICIO SEGRETO', f.secretFound ? 'TROVATO' : '???']];
         rows.forEach(([a, b], i) => {
-          txt(a, 22, 40 + i * 16, { size: 6, color: '#606060' });
-          txt(String(b), 166, 40 + i * 16, { size: 6, align: 'right' });
+          txt(a, 20, 36 + i * 13, { size: 6, color: '#606060' });
+          txt(String(b), 166, 36 + i * 13, { size: 6, align: 'right' });
         });
         rect(178, 40, 42, 52, '#d8e8f8');
         ctx.drawImage(Sprites.character(PAL.player, 'down', 0), 183, 44, 32, 42);
+        txt(COMPANY_UP, 199, 98, { size: 4, align: 'center', color: '#c02828', shadow: false });
+        if (f.baldGold || f.baldBronze) {
+          ctx.fillStyle = f.baldGold ? '#f8d030' : '#c88040';
+          ctx.beginPath(); ctx.arc(199, 120, 8, 0, Math.PI * 2); ctx.fill();
+          txt('PM', 199, 117, { size: 5, align: 'center', color: '#604010', shadow: false });
+        }
       }
     };
     push(L);
@@ -644,8 +249,8 @@ function trainerCard() {
 function hasSave() { try { return !!localStorage.getItem(SAVE_KEY); } catch (e) { return false; } }
 function saveGame() {
   const data = {
-    v: 1, name: game.name, party: game.party, bag: game.bag, money: game.money, flags: game.flags,
-    heal: game.heal, time: game.time, map: curMapId, x: player.x, y: player.y, dir: player.dir
+    v: 2, name: game.name, party: game.party, bag: game.bag, money: game.money, flags: game.flags,
+    heal: game.heal, time: game.time, bald: game.bald, map: curMapId, x: player.x, y: player.y, dir: player.dir
   };
   localStorage.setItem(SAVE_KEY, JSON.stringify(data));
 }
@@ -654,7 +259,7 @@ function loadGame() {
     const d = JSON.parse(localStorage.getItem(SAVE_KEY));
     if (!d || !MAPS[d.map]) return false;
     resetGame();
-    Object.assign(game, { name: d.name, party: d.party, bag: Object.assign(game.bag, d.bag), money: d.money, flags: d.flags, heal: d.heal, time: d.time || 0 });
+    Object.assign(game, { name: d.name, party: d.party, bag: Object.assign(game.bag, d.bag), money: d.money, flags: d.flags, heal: d.heal, time: d.time || 0, bald: d.bald || null });
     loadMap(d.map, d.x, d.y, d.dir);
     return true;
   } catch (e) { console.error(e); return false; }
@@ -696,8 +301,8 @@ const TitleLayer = {
     rect(0, 120, W, 40, 'rgba(20,20,40,0.55)');
     outlinedText('OFFICE', 120, 16, 20, '#f8d030', '#302050');
     outlinedText('QUEST', 120, 40, 20, '#f8d030', '#302050');
-    outlinedText('EDIZIONE CAFFÈ', 120, 66, 6, '#f8f8f8', '#302050');
-    const sps = ['foglietto', 'tazzino', 'mousino'];
+    outlinedText('LATENZAZERO S.P.A.', 120, 66, 6, '#f8f8f8', '#302050');
+    const sps = ['simmetta', 'simbox', 'routerino'];
     sps.forEach((sp, i) => {
       const bob = Math.round(Math.sin(frameCount / 12 + i * 2) * 2);
       ctx.drawImage(Sprites.mon(sp), 36 + i * 60, 76 + bob);
@@ -766,13 +371,13 @@ function nameEntry() {
 
 async function intro() {
   const L = {
-    opaque: true, show: 'ferri',
+    opaque: true, show: 'ondina',
     draw() {
       rect(0, 0, W, H, '#d8e8f0');
       for (let y = 0; y < 112; y += 6) rect(0, y, W, 3, '#d0e0ec');
       ellipseFill(120, 100, 50, 10, '#a8bccc'); ellipseFill(120, 99, 44, 7, '#c4d4e0');
-      if (this.show === 'ferri') ctx.drawImage(Sprites.character(PAL.ferri, 'down', 0), 96, 38, 48, 63);
-      if (this.show === 'mon') ctx.drawImage(Sprites.mon('foglietto'), 96, 52);
+      if (this.show === 'ondina') ctx.drawImage(Sprites.character(PAL.ondina, 'down', 0), 96, 38, 48, 63);
+      if (this.show === 'mon') { ctx.drawImage(Sprites.mon('simmetta'), 60, 52); ctx.drawImage(Sprites.mon('routerino'), 132, 52); }
       if (this.show === 'player') ctx.drawImage(Sprites.character(PAL.player, 'down', 0), 96, 38, 48, 63);
     }
   };
@@ -781,21 +386,21 @@ async function intro() {
   await fadeIn(20);
   await sayAll([
     'Ciao! Benvenuto nel mondo di OFFICE QUEST!',
-    'Il mio nome è FERRI, ma qui tutti mi chiamano la Dott.ssa delle Risorse Umane.'
+    `Io sono la Dott.ssa ONDINA, Risorse Umane di ${COMPANY}, la società di telecomunicazioni più veloce d'Italia. Almeno secondo il marketing.`
   ]);
   L.show = 'mon';
   Sound.sfx('fanfare');
   await sayAll([
-    'Questo è un OFFICEMON! Negli uffici dell\'OFFICE TOWER gli oggetti hanno preso vita.',
-    'Graffette, tazzine, stampanti... Lavorano al nostro fianco e si sfidano in lotte amichevoli.'
+    'Questi sono OFFICEMON! Nei nostri uffici le SIM, i modem, i cavi e perfino le graffette hanno preso vita.',
+    'Lavorano al nostro fianco, gestiscono la rete e ogni tanto si sfidano in lotte amichevoli tra colleghi.'
   ]);
   L.show = 'player';
   await say('E tu? Parlami un po\' di te. Come ti chiami?');
   game.name = await nameEntry();
   await sayAll([
-    `${game.name}! Che bel nome. Oggi è il tuo primo giorno di lavoro.`,
-    'Fatti strada piano dopo piano, forma una squadra di Officemon e conquista la fiducia del DIRETTORE!',
-    'Passa da me nell\'ufficio HR, al piano terra. Ti aspetto!'
+    `${game.name}! Che bel nome. Oggi è il tuo primo giorno in ${COMPANY}`,
+    'Fatti strada piano dopo piano, forma una squadra di Officemon e conquista la fiducia dell\'AMMINISTRATORE DELEGATO!',
+    'Ti aspetto all\'HR, al quinto piano. E se incontri il Dott. Baldinazzo... beh, lo incontrerai di sicuro.'
   ]);
   await fadeOut(24);
   pop(L);
@@ -806,8 +411,11 @@ async function credits() {
   Sound.play('title');
   let finished;
   const done = new Promise(r => { finished = r; });
-  const lines = ['OFFICE QUEST', '', `Complimenti, ${game.name}!`, '', 'Da oggi sei', 'CAPO REPARTO', 'dell\'OFFICE TOWER.', '', '',
-    `Officemon in squadra: ${game.party.length}`, `Assunti con contratto: ${game.flags.caught || 0}`, `Tempo di gioco: ${fmtTime(game.time)}`, '', '',
+  const lines = ['OFFICE QUEST', '', `Complimenti, ${game.name}!`, '', 'Da oggi sei', 'CAPO REPARTO', `di ${COMPANY}`, '', '',
+    `Officemon in squadra: ${game.party.length}`, `Assunti con contratto: ${game.flags.caught || 0}`,
+    `Incontri con il Dott. Baldinazzo: ${Bald.count()}`, `Ufficio segreto: ${game.flags.secretFound ? 'trovato' : 'ancora un mistero'}`,
+    `Tempo di gioco: ${fmtTime(game.time)}`, '', '',
+    'Un ringraziamento speciale', 'al Dott. Baldinazzo,', 'Project Manager,', 'che in questo momento', 'sta correndo in riunione.', '', '',
     'Un gioco in stile', 'Game Boy Advance', 'fatto con HTML5 Canvas', '', '', 'Grazie per aver giocato!', '', '', 'FINE'];
   const L = {
     opaque: true, y: H + 10, stopped: false, closed: false,
@@ -833,7 +441,7 @@ async function credits() {
   await done;
   await fadeOut(20);
   pop(L);
-  Sound.play('town');
+  Sound.play(map && map.outdoor ? 'city' : 'town');
   await fadeIn(20);
 }
 
@@ -863,13 +471,12 @@ async function titleScreen() {
   if (has && i === 0 && loadGame()) {
     Layers.unshift(Overworld);
     game.started = true;
-    Sound.play('town');
     await fadeIn(20);
     return;
   }
   resetGame();
   await intro();
-  loadMap('hall', 10, 7, 'up');
+  loadMap('pt', 10, 7, 'up');
   Layers.unshift(Overworld);
   game.started = true;
   await fadeIn(20);

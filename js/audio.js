@@ -35,6 +35,16 @@ const Sound = (() => {
           C3 . G3 . C3 . G3 .  A2 . E3 . A2 . E3 .  F2 . C3 . G2 . G2 .  C3 . G2 . C3 . . .`) }
       ]
     },
+    city: {
+      bpm: 132, loop: true, voices: [
+        { type: 'square', vol: 0.045, notes: seq(`
+          G4 . B4 D5 G5 - F#5 E5  D5 - B4 - G4 . A4 B4  C5 . E5 G5 C6 - B5 A5  G5 - - - F#5 - . .
+          E5 . G5 B5 E6 - D6 C6  B5 - G5 - E5 . F#5 G5  A5 . F#5 D5 A4 . B4 C5  D5 - - - . . . .`) },
+        { type: 'triangle', vol: 0.12, notes: seq(`
+          G2 . D3 . G2 . D3 .  E2 . B2 . E2 . B2 .  C3 . G3 . C3 . G3 .  D3 . A2 . D3 . F#2 .
+          E2 . B2 . E2 . B2 .  B1 . F#2 . B1 . F#2 .  A2 . E3 . D3 . A2 .  G2 . D3 . G2 . . .`) }
+      ]
+    },
     battle: {
       bpm: 168, loop: true, voices: [
         { type: 'square', vol: 0.045, notes: seq(`
