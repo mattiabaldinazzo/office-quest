@@ -141,9 +141,9 @@ const Decor = (() => {
       rows.forEach((pr, i) => {
         const yy = y + 10 + i * 4.2;
         txt(pr.code.slice(0, 11), x + 3, yy, { size: 3, color: '#283048', shadow: false });
-        R(x + 50, yy + 0.5, 30, 2.4, '#d8d8d8');
-        R(x + 50, yy + 0.5, Math.round(30 * pr.pct / 100), 2.4, pr.pct >= 80 ? '#48b048' : pr.pct >= 30 ? '#e0b030' : '#e04838');
-        txt(pr.pct + '%', x + w - 3, yy, { size: 3, align: 'right', color: '#283048', shadow: false });
+        R(x + 46, yy + 0.5, 22, 2.4, '#d8d8d8');
+        R(x + 46, yy + 0.5, Math.round(22 * pr.pct / 100), 2.4, pr.pct >= 80 ? '#48b048' : pr.pct >= 30 ? '#e0b030' : '#e04838');
+        txt(projectStatus(pr), x + w - 3, yy, { size: 2.5, align: 'right', color: '#283048', shadow: false });
       });
       R(x + w - 14, y + h - 6, 8, 2, '#3870d0'); R(x + w - 24, y + h - 6, 8, 2, '#e04848');
     },

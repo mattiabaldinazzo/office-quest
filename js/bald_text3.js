@@ -343,3 +343,8 @@ const BALD_PROJECTS = [
   { code: 'NUOVO ASSUNTO', pct: 100, note: 'Tenere d\'occhio il nuovo assunto. Cioè tu. Valutazione: ottimo lavoro.' },
   { code: 'NOME IN CODICE', pct: 50, note: 'Trovare un nome in codice per questo progetto. Siamo a metà.' }
 ];
+
+// Sulla lavagna l'avanzamento si legge a parole, mai in numeri.
+function projectStatus(p) {
+  return p.pct >= 100 ? 'FATTO' : p.pct >= 80 ? 'QUASI' : p.pct >= 40 ? 'IN CORSO' : p.pct >= 10 ? 'IN SALITA' : p.pct > 0 ? 'IN PAUSA' : 'LEGGENDA';
+}

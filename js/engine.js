@@ -1,12 +1,26 @@
 'use strict';
 // Motore: input, loop a passo fisso, livelli (layer), testo, finestre e menu.
-const W = 240, H = 160, SCALE = 4, TS = 16;
+const W = 240, H = 160, TS = 16;
+let SCALE = 4;
 const FONT = '"Press Start 2P", "Courier New", monospace';
 const canvas = document.getElementById('screen');
 canvas.width = W * SCALE;
 canvas.height = H * SCALE;
 const ctx = canvas.getContext('2d');
 ctx.imageSmoothingEnabled = false;
+// La risoluzione interna segue la dimensione reale dello schermo: pixel nitidi a ogni grandezza.
+function fitCanvas() {
+  const r = canvas.getBoundingClientRect();
+  if (!r.width) return;
+  const s = Math.max(2, Math.min(10, Math.ceil(r.width * (window.devicePixelRatio || 1) / W)));
+  if (s === SCALE && canvas.width === W * s) return;
+  SCALE = s;
+  canvas.width = W * s;
+  canvas.height = H * s;
+  ctx.imageSmoothingEnabled = false;
+}
+window.addEventListener('resize', fitCanvas);
+if (window.ResizeObserver) new ResizeObserver(fitCanvas).observe(canvas);
 let frameCount = 0;
 
 // ---------- Input ----------

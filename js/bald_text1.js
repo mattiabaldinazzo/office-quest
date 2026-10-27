@@ -74,7 +74,7 @@ BALD_TEXT.bolle = [
 BALD_TEXT.palco = [
   ['parla su un palco davanti a una folla di colleghi', '...e quindi ricordate: la latenza è temporanea, la qualità è per sempre! Grazie, grazie.'],
   ['tiene un keynote sul futuro della fibra', 'Il futuro è luce che viaggia nel vetro. Il presente è un caffè. Partiamo dal presente.'],
-  ['presenta i risultati trimestrali con grande entusiasmo', 'Abbiamo superato il target del 12%. L\'applauso è per voi, non per me. Va bene, anche un po\' per me.'],
+  ['presenta i risultati trimestrali con grande entusiasmo', 'Abbiamo superato ogni aspettativa. L\'applauso è per voi, non per me. Va bene, anche un po\' per me.'],
   ['fa un discorso motivazionale con il microfono in mano', 'Siamo una squadra! E una squadra si vede quando il server cade di venerdì alle 18.'],
   ['parla dal palco e fa ridere tutta la platea', 'Qual è il colmo per un router? Perdere la connessione con i sentimenti. Funziona sempre.'],
   ['presenta un nuovo processo aziendale con una slide sola', 'Una slide. Una. Ho tolto le altre 47. La gente piange di gioia.'],
@@ -228,7 +228,7 @@ BALD_TEXT.telescopio = [
   ['guarda le stelle con un telescopio', 'Sto cercando il satellite che ci porta il segnale. Eccolo. Salutalo anche tu.'],
   ['osserva il cielo con un telescopio puntato in alto', 'Le stelle sono come i KPI: lontane, luminose e difficili da raggiungere.'],
   ['guarda in un telescopio e prende appunti', 'Ho scoperto una costellazione nuova. L\'ho chiamata "Roadmap": ha una freccia che punta lontano.'],
-  ['punta il telescopio verso l\'antenna sul tetto di fronte', 'Controllo l\'orientamento. Due gradi a sinistra e la copertura migliora del 3%.'],
+  ['punta il telescopio verso l\'antenna sul tetto di fronte', 'Controllo l\'orientamento. Un pelo a sinistra e il segnale arriva più sorridente.'],
   ['osserva la Luna con il telescopio', 'Sulla Luna non c\'è campo. Nessuno può scriverti in chat. Ci andrei in vacanza.'],
   ['cerca una cometa con il telescopio', 'Le comete passano di rado, come le buone idee. Bisogna essere pronti a guardare.'],
   ['regola le lenti di un telescopio con delicatezza', 'La messa a fuoco è tutto. Nella vita, nei progetti e nei telescopi.'],

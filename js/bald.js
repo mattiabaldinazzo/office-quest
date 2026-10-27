@@ -373,15 +373,20 @@ const Bald = (() => {
       dir = ['down', 'left', 'right'][Math.floor(Math.random() * 3)];
     }
     pick.commit();
+    st().visitDone = true;
     const suit = BALD_SUITS[Math.floor(Math.random() * BALD_SUITS.length)];
     npcs.push(make(x, y, dir, sc, suit, { hide }));
     return true;
   }
 
-  function onEnterMap() {
+  // Il Dott. Baldinazzo compare al massimo una volta per ogni visita a una stanza:
+  // se è già uscito con una scusa, torna solo quando cambi stanza.
+  function onEnterMap(canSpawn = true) {
     const s = st();
     s.steps = 0;
-    if (game.flags && game.flags.baldIntro && Math.random() < 0.7) spawn();
+    s.next = 6 + Math.floor(Math.random() * 10);
+    s.visitDone = false;
+    if (canSpawn && game.flags && game.flags.baldIntro && Math.random() < 0.8) spawn();
   }
   function onStep() {
     if (!game.flags.baldIntro) return;
@@ -390,21 +395,20 @@ const Bald = (() => {
     if (cur) {
       if (cur.leaving) return;
       cur.age = (cur.age || 0) + 1;
-      if (cur.age < 12) return;
       const visible = Math.abs(cur.x - player.x) <= 7 && Math.abs(cur.y - player.y) <= 4;
-      if (visible) runScript(() => callOut(cur));
-      else { npcs.splice(npcs.indexOf(cur), 1); s.steps = s.next - 2; }
+      if (cur.age >= 12 && visible) runScript(() => callOut(cur));
       return;
     }
+    if (s.visitDone) return;
     s.steps++;
-    if (s.steps >= s.next && spawn()) { s.steps = 0; s.next = 8 + Math.floor(Math.random() * 8); }
+    if (s.steps >= s.next) spawn();
   }
 
-  // Dopo una lotta il Dott. Baldinazzo arriva presto: ha sempre un commento sulla partita.
+  // Dopo una lotta, se in questa stanza non si è ancora visto, arriva presto a commentare.
   function afterBattle() {
     if (!game.flags.baldIntro) return;
     const s = st();
-    s.steps = Math.max(s.steps, s.next - 2);
+    if (!s.visitDone) s.steps = Math.max(s.steps, s.next - 2);
   }
 
   // Se il giocatore non si avvicina, è il Dott. Baldinazzo a chiamarlo.
@@ -554,6 +558,7 @@ const Bald = (() => {
     ], P);
     game.flags.baldIntro = true;
     st().count = Math.max(st().count, 1);
+    st().visitDone = true;
     await leave(n);
   }
 

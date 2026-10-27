@@ -21,9 +21,10 @@ Il Project Manager più esperto dell'azienda. Compare continuamente in giro per 
 
 - 36 attività animate, 504 situazioni diverse, 133 scuse per scappare in riunione
 - Ogni incontro: cosa sta facendo, una battuta, un consiglio legato al punto della storia, la scusa e l'uscita di scena
+- Compare al massimo una volta per ogni visita a una stanza: dopo che è scappato con una scusa, lo rivedi solo cambiando stanza
 - Se lo ignori, ti chiama lui
 - Il tesserino aziendale conta gli incontri; a 25, 50, 100, 150, 200, 300, 400 e 500 ci sono premi
-- **Easter egg:** il suo ufficio segreto. I colleghi chiedono spesso se ci sei già stato e danno un indizio. Dentro: la lavagna con i progetti in codice, la poltrona chesterfield, la lampada da biblioteca, quadri, un telefono rosso, una cassaforte con combinazione, un gatto e altre sorprese.
+- **Easter egg:** il suo ufficio segreto. Circa un collega su cinque chiede se ci sei già stato e dà un indizio. Dentro: la lavagna con i progetti in codice, la poltrona chesterfield, la lampada da biblioteca, quadri, un telefono rosso, una cassaforte con combinazione, un gatto e altre sorprese.
 
 ## Aggiungere personaggi
 

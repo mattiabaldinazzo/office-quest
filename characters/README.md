@@ -38,7 +38,7 @@ La GitHub Action `Indice personaggi` aggiorna da sola `index.json`, l'elenco dei
 
 Il vestito è casuale: camicia, pantaloni, giacca, cravatta e occhiali cambiano a ogni incontro.
 
-Ogni personaggio aggiunto, come tutti i colleghi del gioco, chiede spesso al giocatore se ha visitato l'ufficio del Dott. Baldinazzo e regala un indizio per trovarlo.
+Circa un personaggio su cinque, scelto in base al nome, chiede al giocatore se ha visitato l'ufficio del Dott. Baldinazzo e regala un indizio per trovarlo.
 
 ## Consigli
 

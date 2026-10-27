@@ -63,7 +63,7 @@ const Story = {
     const T = {
       pingpong: ['Un tavolo da ping pong. La rete è stata sostituita con un cavo di rete. Funziona lo stesso.'],
       calcetto: ['Un calcio balilla. Le stecche sono consumate da mille derby tra Sales e IT.'],
-      desk3: ['Tre monitor accesi. Primo: NPS 87, churn in calo del 2,1%. Secondo: 12.480 attivazioni oggi. Terzo: uptime 99,999%.', 'Sotto la tastiera c\'è un post-it: "Le dashboard dicono cosa succede. Le persone dicono perché. Dott. B."'],
+      desk3: ['Tre monitor accesi pieni di grafici colorati. Barre che salgono, linee che ondeggiano, cerchi che girano. Nessun numero: solo emoticon sorridenti.', 'Sotto la tastiera c\'è un post-it: "Le dashboard dicono cosa succede. Le persone dicono perché. Dott. B."'],
       chair: ['La sedia da ufficio più ergonomica che tu abbia mai visto. Meglio non sedersi: è chiaramente la sua.'],
       sign: ['Il cartello sulla sedia dice: TORNO SUBITO.', 'Sotto, scritto più piccolo: "Subito è un concetto relativo. Dott. B."'],
       sede: [`La sede di ${COMPANY} Vetro, acciaio e un badge che non funziona mai al primo colpo.`],
@@ -277,7 +277,7 @@ async function adTalk() {
     await say('Ricordati di salvare dal menu START. L\'AD accetta rivincite e il Dott. Baldinazzo continua a girare per l\'azienda!');
   } else if (await ask('AD: Già di ritorno? Vuoi una revisione di metà anno? Intendo... una rivincita.')) {
     const r = await startBattle({ trainer: TRAINERS.adRematch, boss: true });
-    if (r === 'win') await say('AD: Va bene, va bene. Ti aumento il budget. Dell\'1%.');
+    if (r === 'win') await say('AD: Va bene, va bene. Ti regalo la mia penna stilografica. Quella buona.');
   } else {
     await say('AD: Allora torna al lavoro, CAPO REPARTO.');
   }
@@ -378,7 +378,7 @@ async function ccTalk() {
     if (!(await headBattle('cc'))) return;
     await sayAll([
       'HEAD OF CUSTOMER CARE NPS: Te li darei subito. Ma prima mi servono i VOLUMI di attivazione previsti da Sales.',
-      'HEAD OF CUSTOMER CARE NPS: Se arrivano diecimila chiamate in un giorno, i miei operatori devono saperlo prima. Torna da Sales.'
+      'HEAD OF CUSTOMER CARE NPS: Se arriva un\'ondata di chiamate, i miei operatori devono saperlo prima. Torna da Sales.'
     ]);
     f.q = 3;
   } else if (q === 3) {
@@ -398,15 +398,15 @@ async function ccTalk() {
 
 // ---------- Ufficio segreto: oggetti interattivi ----------
 async function studioBoard() {
-  await say('Una grande lavagna: "PROGETTI TOP SECRET DEL DOTT. B." Ogni progetto ha un nome in codice e una barra di avanzamento.');
-  const list = BALD_PROJECTS.map(p => `${p.code}  ${p.pct}%`);
+  await say('Una grande lavagna: "PROGETTI TOP SECRET DEL DOTT. B." Ogni progetto ha un nome in codice, una barra colorata e uno stato scritto a pennarello.');
+  const list = BALD_PROJECTS.map(p => `${p.code}  ${projectStatus(p)}`);
   let i = 0;
   for (;;) {
     const k = await choose([...list, 'CHIUDI'], { cancel: list.length, start: i, size: 5, lh: 9, x: 40, y: 2, w: 196 });
     if (k === list.length) break;
     i = k;
     const p = BALD_PROJECTS[k];
-    await say(`PROGETTO ${p.code.toUpperCase()} (${p.pct}%): ${p.note}`);
+    await say(`PROGETTO ${p.code.toUpperCase()} (${projectStatus(p)}): ${p.note}`);
   }
   await say('In fondo alla lavagna, scritto in piccolo: "Prossima revisione di avanzamento: quando torno. Cioè subito."');
 }

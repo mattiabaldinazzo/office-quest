@@ -229,7 +229,7 @@ BALD_TEXT.basket = [
   ['fa un canestro all\'indietro, senza guardare', 'Fiducia. Il canestro è lì. Come le scadenze: non le vedi, ma ci sono.'],
   ['sfida un collega a basket', 'Il primo a dieci canestri vince. Il perdente organizza la prossima cena di team.'],
   ['schiaccia a canestro con un salto elegante', 'Schiacciata! Il segreto è il salto. E le sneakers aziendali.'],
-  ['tira tiri liberi contandoli ad alta voce', 'Diciotto su venti. Il 90%. Come lo SLA del customer care, quasi.'],
+  ['tira tiri liberi contandoli ad alta voce', 'Quasi tutti dentro. Il resto è allenamento per la prossima volta.'],
   ['fa girare il pallone sul dito', 'Il pallone gira come un buon processo: stabile, regolare, senza intoppi.'],
   ['tira a canestro e fa un passaggio a sorpresa a un collega', 'Il basket è uno sport di squadra. Il passaggio vale quanto il canestro.'],
   ['allena una squadra di colleghi a basket', 'Difesa a zona! Come il customer care: ognuno copre la sua area.'],

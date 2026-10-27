@@ -28,7 +28,7 @@ function loadMap(id, x, y, dir, opts = {}) {
   banner = opts.noBanner ? null : { text: map.name, t: 0 };
   Sound.play(map.outdoor ? 'city' : 'town');
   CustomChars.spawnFor(id);
-  if (!opts.noBald) Bald.onEnterMap();
+  Bald.onEnterMap(!opts.noBald);
 }
 function tileAt(x, y) {
   const row = map.tiles[y];
@@ -394,8 +394,18 @@ function speakerOf(n) {
 }
 
 // I colleghi chiedono spesso se hai visto l'ufficio del Dott. Baldinazzo, e danno un indizio.
+// Circa un collega su cinque sa qualcosa dell'ufficio segreto, distribuiti su piani diversi.
+const SECRET_KEEPERS = new Set(['guard', 'pp1', 'pausa2', 'facil2', 'scrum', 'utente', 'segretaria', 'passante1', 'nonna', 'giardiniera', 'writer', 'divano2']);
+function knowsSecret(n) {
+  if (!n.custom) return SECRET_KEEPERS.has(n.id);
+  let h = 0;
+  for (const ch of String(n.id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return h % 5 === 0;
+}
+
 async function sayHint(n) {
   if (n.hint === undefined && !n.custom) return;
+  if (!knowsSecret(n)) return;
   const who = speakerOf(n), pre = who ? who + ': ' : '';
   const hint = HINTS[(n.hint !== undefined ? n.hint : Math.floor(Math.random() * HINTS.length)) % HINTS.length];
   const found = !!game.flags.secretFound;
